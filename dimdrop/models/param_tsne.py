@@ -10,7 +10,7 @@ from ..util.tsne import compute_joint_probabilities
 
 
 class ParametricTSNE:
-    def __init__(self, in_dim, layer_sizes=[500, 500, 2000, 2], lr=0.01, batch_size=5000, pretrain=False, perplexity=30, tol=1e-5, verbose=0, patience=3, epochs=1000):
+    def __init__(self, in_dim, layer_sizes=[500, 500, 2000, 2], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-5, verbose=0, patience=3, epochs=1000):
         self.in_dim = in_dim
         self.layer_sizes = layer_sizes
         self.lr = lr
@@ -79,4 +79,11 @@ class ParametricTSNE:
         y_train = P.reshape(data.shape[0], -1)
 
         self.model.fit(data, y_train, epochs=self.epochs, callbacks=[
-                       early_stopping], batch_size=self.batch_size, shuffle=False)
+                       early_stopping], batch_size=self.batch_size, shuffle=False, verbose=self.verbose)
+
+    def transform(self, data):
+        return self.model.predict(data)
+
+    def fit_transform(self, data):
+        self.fit(data)
+        return self.transform(data)

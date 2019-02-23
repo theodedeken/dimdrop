@@ -4,6 +4,8 @@ from keras import backend as K
 
 
 class TSNELoss:
+    __name__ = 'tsne_loss'
+
     def __init__(self, dim, batch_size):
         self.dim = dim
         self.batch_size = batch_size
