@@ -82,7 +82,7 @@ class ParametricTSNE:
                        early_stopping], batch_size=self.batch_size, shuffle=False, verbose=self.verbose)
 
     def transform(self, data):
-        return self.model.predict(data)
+        return self.model.predict(data, verbose=self.verbose)
 
     def fit_transform(self, data):
         self.fit(data)
