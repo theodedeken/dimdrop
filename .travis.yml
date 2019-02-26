@@ -3,7 +3,7 @@ language: python
 python: 3.7
 cache: pip
 install:
-  - pip install . -e
+  - pip install -e .
   - pip install pdoc3
 script: pdoc3 --html dimdrop
 deploy:
