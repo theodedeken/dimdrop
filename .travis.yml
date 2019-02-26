@@ -3,7 +3,7 @@ language: python
 python: 3.7
 cache: pip
 install: pip install pdoc3
-before_deploy: pdoc --html dimdrop/
+script: pdoc --html dimdrop/
 deploy:
   provider: pages
   local-dir: html/dimdrop
