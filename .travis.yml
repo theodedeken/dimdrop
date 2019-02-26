@@ -1,0 +1,13 @@
+language: python
+python: 3.7
+cache: pip
+before_deploy: |
+  pip install pdoc3 && pdoc --html dimdrop/
+deploy:
+  provider: pages
+  local-dir: html/dimdrop
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN # Set in the settings page of your repository, as a secure variable
+  keep-history: true
+  on:
+    branch: master
