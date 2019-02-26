@@ -31,24 +31,9 @@ class KMeansRegularizer(Callback):
 
         self.cluster_centers = np.array(
             [new_centers[i] / counters[i] for i in range(len(counters))])
-        print()
-        print(self.cluster_centers)
         self.__fix_centers()
 
-        print(self.cluster_centers)
-
-        #grouped = [[] for _ in range(len(self.cluster_centers))]
-        # for el in self.cluster_assignments:
-        #    grouped[el[0]].append(K.get_value(el[1]))
-        #new_centers = []
-
-        # for i, group in enumerate(grouped):
-        #    new_centers.append(np.sum(np.array(group)) / len(group))
-        #self.cluster_centers = new_centers
-        #self.cluster_assignments = []
-
     def __call__(self, activations):
-        #dists = K.zeros(shape=(self.batch_size,))
         dists = K.map_fn(self.__cluster_dist, activations)
 
         squared = K.square(dists)
@@ -67,13 +52,8 @@ class KMeansRegularizer(Callback):
 
             self.cluster_centers[index] = new_center / 3
 
-    def __calc_center(self, nodes):
-        print(nodes)
-        return np.sum(nodes) / len(nodes)
-
     def __cluster_dist(self, activation):
         dist_2 = K.sum((self.cluster_centers - activation)**2, axis=1)
         min_dist = np.argmin(dist_2)
 
-        #self.cluster_assignments.append((min_dist, activation))
         return dist_2[min_dist]

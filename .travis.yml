@@ -1,12 +1,12 @@
 dist: xenial
-sudo: false
+sudo: true
 language: python
 python: 3.7
 cache: pip
-before_deploy:
-  - pip install .
+install:
+  - sudo pip install .
   - pip install pdoc3
-  - pdoc dimdrop --html
+script: pdoc dimdrop --html
 deploy:
   provider: pages
   local-dir: html/dimdrop
