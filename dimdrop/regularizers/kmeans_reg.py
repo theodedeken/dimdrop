@@ -6,19 +6,54 @@ import random
 
 
 class KMeansRegularizer(Callback):
+    """
+    Custom keras regularizer to apply k-means loss to a network
+    """
     __name__ = 'kmeans_regularizer'
 
     def __init__(self, cluster_centers, batch_size=100, weight=0.5):
+        """
+        Initialize the regularizer
+
+        Parameters
+        ----------
+        cluster_centers : array
+            The initial cluster centers
+        batch_size : int, optional
+            The batch size of the network
+        weight : float
+            The strength of the regularizer
+        """
         self.cluster_centers = cluster_centers
         self.batch_size = batch_size
         self.weight = K.variable(weight)
         self.cluster_assignments = []
 
     def init_fit(self, encoder, input_data):
+        """
+        Initialize this regularizer for a fitting operation
+
+        Parameters
+        ----------
+        encoder : keras model
+            The encoder part of the model being fitted
+        input_data : array
+            The fitting data
+        """
         self.encoder = encoder
         self.input_data = input_data
 
     def on_epoch_end(self, epoch, logs=None):
+        """
+        Executed at the end of every epoch. Recalculates the cluster centers.
+
+        Parameters
+        ----------
+        epoch : int
+            The current epoch
+        logs : dictionary
+            The logs of the model
+        """
         # update cluster centers
         encoding = self.encoder.predict(self.input_data)
         new_centers = np.zeros(self.cluster_centers.shape)

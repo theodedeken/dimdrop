@@ -7,7 +7,55 @@ import numpy as np
 
 
 class Autoencoder:
-    def __init__(self, in_dim, out_dim, layer_sizes=[2000, 1000, 500], lr=0.01, batch_size=100, patience=3, epochs=1000, regularizer=None, pretrain_method='rbm', verbose=0):
+    """
+    A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.
+
+    The defaults are set to the parameters explained in the paper of Geoffrey Hinton.
+
+    References
+    ----------
+    - TODO
+    """
+
+    def __init__(
+        self,
+        in_dim,
+        out_dim,
+        layer_sizes=[2000, 1000, 500],
+        lr=0.01,
+        batch_size=100,
+        patience=3,
+        epochs=1000,
+        regularizer=None,
+        pretrain_method='rbm',
+        verbose=0
+    ):
+        """
+        Initialize the autoencoder.
+
+        Parameters
+        ----------
+        in_dim : int 
+            The input dimension
+        out_dim : int
+            The output dimension
+        layer_sizes : array of int, optional
+            The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
+        lr : float, optional 
+            The learning rate of the network, default `0.01`
+        batch_size : int, optional
+            The batch size of the network, default `100`
+        patience : int, optional
+            The amount of epochs without improvement before the network stops training, default `3`
+        epochs : int, optional
+            The maximum amount of epochs, default `1000`
+        regularizer : keras regularizer, optional
+            A regularizer to use for the middle layer of the autoencoder. None or instance of KMeansRegularizer, GMMRegularizer, TSNERegularizer.
+        pretrain_method : string, optional
+            The pretrain method to use. None, `'rbm'` or `'stacked'`
+        verbose : int, optional
+            The verbosity of the network
+        """
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.layer_sizes = layer_sizes
@@ -65,21 +113,54 @@ class Autoencoder:
                 [np.transpose(rbm.components_), enc_layer.get_weights()[1]])
 
     def fit(self, data):
+        """
+        Fit the given data to the model.
+
+        Parameters
+        ----------
+        data : array
+            Array of training samples where each sample is of size `in_dim`
+        """
         if self.pretrain_method:
             self.__pretrainers[self.pretrain_method](data)
 
         early_stopping = EarlyStopping(monitor='loss', patience=self.patience)
         callbacks = [early_stopping]
         if self.regularizer:
-            # TODO temp
             self.regularizer.init_fit(self.encoder, data)
             callbacks.append(self.regularizer)
         self.model.fit(data, data, epochs=self.epochs, callbacks=callbacks,
                        batch_size=self.batch_size, verbose=self.verbose)
 
     def transform(self, data):
+        """
+        Transform the given data
+
+        Parameters
+        ----------
+        data : array
+            Array of samples to be transformed, where each sample is of size `in_dim`
+
+        Returns
+        -------
+        array
+            Transformed samples, where each sample is of size `out_dim`
+        """
         return self.encoder.predict(data, verbose=self.verbose)
 
     def fit_transform(self, data):
+        """
+        Fit the given data to the model and return its transformation
+
+        Parameters
+        ----------
+        data : array
+            Array of training samples where each sample is of size `in_dim`
+
+        Returns
+        -------
+        array
+            Transformed samples, where each sample is of size `out_dim`
+        """
         self.fit(data)
         return self.transform(data)
