@@ -2,8 +2,8 @@ dist: xenial
 language: python
 python: 3.7
 cache: pip
-before_deploy: |
-  pip install pdoc3 && pdoc --html dimdrop/
+install: pip install pdoc3
+before_deploy: pdoc --html dimdrop/
 deploy:
   provider: pages
   local-dir: html/dimdrop
