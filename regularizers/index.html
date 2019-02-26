@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.5.2" />
-<title>dimdrop..regularizers API documentation</title>
+<title>dimdrop.regularizers API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title"><code>dimdrop..regularizers</code> module</h1>
+<h1 class="title"><code>dimdrop.regularizers</code> module</h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -33,11 +33,11 @@ __all__ = [
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt><code class="name"><a title="dimdrop..regularizers.kmeans_reg" href="kmeans_reg.html">dimdrop..regularizers.kmeans_reg</a></code></dt>
+<dt><code class="name"><a title="dimdrop.regularizers.kmeans_reg" href="kmeans_reg.html">dimdrop.regularizers.kmeans_reg</a></code></dt>
 <dd>
 <section class="desc"></section>
 </dd>
-<dt><code class="name"><a title="dimdrop..regularizers.tsne_reg" href="tsne_reg.html">dimdrop..regularizers.tsne_reg</a></code></dt>
+<dt><code class="name"><a title="dimdrop.regularizers.tsne_reg" href="tsne_reg.html">dimdrop.regularizers.tsne_reg</a></code></dt>
 <dd>
 <section class="desc"></section>
 </dd>
@@ -50,7 +50,7 @@ __all__ = [
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="dimdrop..regularizers.KMeansRegularizer"><code class="flex name class">
+<dt id="dimdrop.regularizers.KMeansRegularizer"><code class="flex name class">
 <span>class <span class="ident">KMeansRegularizer</span></span>
 <span>(</span><span><small>ancestors:</small> keras.callbacks.Callback)</span>
 </code></dt>
@@ -134,7 +134,7 @@ on_batch_end: logs include `loss`, and optionally `acc`
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="dimdrop..regularizers.KMeansRegularizer.__init__"><code class="name flex">
+<dt id="dimdrop.regularizers.KMeansRegularizer.__init__"><code class="name flex">
 <span>def <span class="ident">__init__</span></span>(<span>self, cluster_centers, batch_size=100, weight=0.5)</span>
 </code></dt>
 <dd>
@@ -149,7 +149,7 @@ See help(type(self)) for accurate signature.</p></section>
     self.cluster_assignments = []</code></pre>
 </details>
 </dd>
-<dt id="dimdrop..regularizers.KMeansRegularizer.init_fit"><code class="name flex">
+<dt id="dimdrop.regularizers.KMeansRegularizer.init_fit"><code class="name flex">
 <span>def <span class="ident">init_fit</span></span>(<span>self, encoder, input_data)</span>
 </code></dt>
 <dd>
@@ -161,7 +161,7 @@ See help(type(self)) for accurate signature.</p></section>
     self.input_data = input_data</code></pre>
 </details>
 </dd>
-<dt id="dimdrop..regularizers.KMeansRegularizer.on_epoch_end"><code class="name flex">
+<dt id="dimdrop.regularizers.KMeansRegularizer.on_epoch_end"><code class="name flex">
 <span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch, logs=None)</span>
 </code></dt>
 <dd>
@@ -186,7 +186,7 @@ See help(type(self)) for accurate signature.</p></section>
 </dd>
 </dl>
 </dd>
-<dt id="dimdrop..regularizers.TSNERegularizer"><code class="flex name class">
+<dt id="dimdrop.regularizers.TSNERegularizer"><code class="flex name class">
 <span>class <span class="ident">TSNERegularizer</span></span>
 <span>(</span><span><small>ancestors:</small> keras.callbacks.Callback)</span>
 </code></dt>
@@ -233,7 +233,7 @@ on_batch_end: logs include `loss`, and optionally `acc`
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="dimdrop..regularizers.TSNERegularizer.__init__"><code class="name flex">
+<dt id="dimdrop.regularizers.TSNERegularizer.__init__"><code class="name flex">
 <span>def <span class="ident">__init__</span></span>(<span>self, dim, joint_prob, batch_size=100)</span>
 </code></dt>
 <dd>
@@ -249,7 +249,7 @@ See help(type(self)) for accurate signature.</p></section>
     self.loss = TSNELoss(self.dim, self.batch_size)</code></pre>
 </details>
 </dd>
-<dt id="dimdrop..regularizers.TSNERegularizer.on_batch_begin"><code class="name flex">
+<dt id="dimdrop.regularizers.TSNERegularizer.on_batch_begin"><code class="name flex">
 <span>def <span class="ident">on_batch_begin</span></span>(<span>self, batch, logs={})</span>
 </code></dt>
 <dd>
@@ -273,30 +273,30 @@ See help(type(self)) for accurate signature.</p></section>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="dimdrop." href="../index.html">dimdrop.</a></code></li>
+<li><code><a title="dimdrop" href="../index.html">dimdrop</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li><code><a title="dimdrop..regularizers.kmeans_reg" href="kmeans_reg.html">dimdrop..regularizers.kmeans_reg</a></code></li>
-<li><code><a title="dimdrop..regularizers.tsne_reg" href="tsne_reg.html">dimdrop..regularizers.tsne_reg</a></code></li>
+<li><code><a title="dimdrop.regularizers.kmeans_reg" href="kmeans_reg.html">dimdrop.regularizers.kmeans_reg</a></code></li>
+<li><code><a title="dimdrop.regularizers.tsne_reg" href="tsne_reg.html">dimdrop.regularizers.tsne_reg</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="dimdrop..regularizers.KMeansRegularizer" href="#dimdrop..regularizers.KMeansRegularizer">KMeansRegularizer</a></code></h4>
+<h4><code><a title="dimdrop.regularizers.KMeansRegularizer" href="#dimdrop.regularizers.KMeansRegularizer">KMeansRegularizer</a></code></h4>
 <ul class="">
-<li><code><a title="dimdrop..regularizers.KMeansRegularizer.__init__" href="#dimdrop..regularizers.KMeansRegularizer.__init__">__init__</a></code></li>
-<li><code><a title="dimdrop..regularizers.KMeansRegularizer.init_fit" href="#dimdrop..regularizers.KMeansRegularizer.init_fit">init_fit</a></code></li>
-<li><code><a title="dimdrop..regularizers.KMeansRegularizer.on_epoch_end" href="#dimdrop..regularizers.KMeansRegularizer.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="dimdrop.regularizers.KMeansRegularizer.__init__" href="#dimdrop.regularizers.KMeansRegularizer.__init__">__init__</a></code></li>
+<li><code><a title="dimdrop.regularizers.KMeansRegularizer.init_fit" href="#dimdrop.regularizers.KMeansRegularizer.init_fit">init_fit</a></code></li>
+<li><code><a title="dimdrop.regularizers.KMeansRegularizer.on_epoch_end" href="#dimdrop.regularizers.KMeansRegularizer.on_epoch_end">on_epoch_end</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="dimdrop..regularizers.TSNERegularizer" href="#dimdrop..regularizers.TSNERegularizer">TSNERegularizer</a></code></h4>
+<h4><code><a title="dimdrop.regularizers.TSNERegularizer" href="#dimdrop.regularizers.TSNERegularizer">TSNERegularizer</a></code></h4>
 <ul class="">
-<li><code><a title="dimdrop..regularizers.TSNERegularizer.__init__" href="#dimdrop..regularizers.TSNERegularizer.__init__">__init__</a></code></li>
-<li><code><a title="dimdrop..regularizers.TSNERegularizer.on_batch_begin" href="#dimdrop..regularizers.TSNERegularizer.on_batch_begin">on_batch_begin</a></code></li>
+<li><code><a title="dimdrop.regularizers.TSNERegularizer.__init__" href="#dimdrop.regularizers.TSNERegularizer.__init__">__init__</a></code></li>
+<li><code><a title="dimdrop.regularizers.TSNERegularizer.on_batch_begin" href="#dimdrop.regularizers.TSNERegularizer.on_batch_begin">on_batch_begin</a></code></li>
 </ul>
 </li>
 </ul>
