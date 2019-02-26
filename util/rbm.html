@@ -27,7 +27,34 @@ import numpy as np
 
 
 class EarlyStoppingRBM:
+    &#34;&#34;&#34;
+    Adaptation on the `BernoulliRBM` class of sklearn to add the ability to stop early when training does not improve.
+
+    Attributes
+    ----------
+    rbm : BernoulliRBM
+        the rbm to be trained
+    &#34;&#34;&#34;
+
     def __init__(self, n_components=256, batch_size=100, lr=0.01, patience=3, epochs=1000, verbose=0):
+        &#34;&#34;&#34;
+        Initialize a new RBM
+
+        Parameters
+        ----------
+        n_components : int, optional
+            The size of the output, default `256`
+        batch_size : int, optional
+            The batch size of the rbm, default `100`
+        lr : float, optional
+            The learning rate of the rbm, default `0.01`
+        patience : int, optional
+            The amount of epochs without improvement before training stops, default `3`
+        epochs : int, optional
+            The maximum amount of epochs, default `1000`
+        verbose : int, optional
+            The verbosity of the rbm, default `0`
+        &#34;&#34;&#34;
         self.rbm = BernoulliRBM(n_components=n_components, n_iter=1,
                                 batch_size=batch_size, learning_rate=lr, verbose=verbose)
         self.patience = patience
@@ -35,6 +62,14 @@ class EarlyStoppingRBM:
         self.verbose = verbose
 
     def fit(self, data):
+        &#34;&#34;&#34;
+        Fit the rbm to the given data
+
+        Parameters
+        ----------
+        data : array
+            Data to be fitted
+        &#34;&#34;&#34;
         self.rbm.fit(data)
         min_likelyhood = np.mean(
             [np.mean(self.rbm.score_samples(data)) for _ in range(5)])
@@ -67,11 +102,43 @@ class EarlyStoppingRBM:
 <span>class <span class="ident">EarlyStoppingRBM</span></span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Adaptation on the <code>BernoulliRBM</code> class of sklearn to add the ability to stop early when training does not improve.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>rbm</code></strong> :&ensp;<code>BernoulliRBM</code></dt>
+<dd>the rbm to be trained</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class EarlyStoppingRBM:
+    &#34;&#34;&#34;
+    Adaptation on the `BernoulliRBM` class of sklearn to add the ability to stop early when training does not improve.
+
+    Attributes
+    ----------
+    rbm : BernoulliRBM
+        the rbm to be trained
+    &#34;&#34;&#34;
+
     def __init__(self, n_components=256, batch_size=100, lr=0.01, patience=3, epochs=1000, verbose=0):
+        &#34;&#34;&#34;
+        Initialize a new RBM
+
+        Parameters
+        ----------
+        n_components : int, optional
+            The size of the output, default `256`
+        batch_size : int, optional
+            The batch size of the rbm, default `100`
+        lr : float, optional
+            The learning rate of the rbm, default `0.01`
+        patience : int, optional
+            The amount of epochs without improvement before training stops, default `3`
+        epochs : int, optional
+            The maximum amount of epochs, default `1000`
+        verbose : int, optional
+            The verbosity of the rbm, default `0`
+        &#34;&#34;&#34;
         self.rbm = BernoulliRBM(n_components=n_components, n_iter=1,
                                 batch_size=batch_size, learning_rate=lr, verbose=verbose)
         self.patience = patience
@@ -79,6 +146,14 @@ class EarlyStoppingRBM:
         self.verbose = verbose
 
     def fit(self, data):
+        &#34;&#34;&#34;
+        Fit the rbm to the given data
+
+        Parameters
+        ----------
+        data : array
+            Data to be fitted
+        &#34;&#34;&#34;
         self.rbm.fit(data)
         min_likelyhood = np.mean(
             [np.mean(self.rbm.score_samples(data)) for _ in range(5)])
@@ -103,11 +178,43 @@ class EarlyStoppingRBM:
 <span>def <span class="ident">__init__</span></span>(<span>self, n_components=256, batch_size=100, lr=0.01, patience=3, epochs=1000, verbose=0)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Initialize self.
-See help(type(self)) for accurate signature.</p></section>
+<section class="desc"><p>Initialize a new RBM</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>n_components</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The size of the output, default <code>256</code></dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size of the rbm, default <code>100</code></dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The learning rate of the rbm, default <code>0.01</code></dd>
+<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The amount of epochs without improvement before training stops, default <code>3</code></dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The maximum amount of epochs, default <code>1000</code></dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The verbosity of the rbm, default <code>0</code></dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def __init__(self, n_components=256, batch_size=100, lr=0.01, patience=3, epochs=1000, verbose=0):
+    &#34;&#34;&#34;
+    Initialize a new RBM
+
+    Parameters
+    ----------
+    n_components : int, optional
+        The size of the output, default `256`
+    batch_size : int, optional
+        The batch size of the rbm, default `100`
+    lr : float, optional
+        The learning rate of the rbm, default `0.01`
+    patience : int, optional
+        The amount of epochs without improvement before training stops, default `3`
+    epochs : int, optional
+        The maximum amount of epochs, default `1000`
+    verbose : int, optional
+        The verbosity of the rbm, default `0`
+    &#34;&#34;&#34;
     self.rbm = BernoulliRBM(n_components=n_components, n_iter=1,
                             batch_size=batch_size, learning_rate=lr, verbose=verbose)
     self.patience = patience
@@ -119,10 +226,23 @@ See help(type(self)) for accurate signature.</p></section>
 <span>def <span class="ident">fit</span></span>(<span>self, data)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Fit the rbm to the given data</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
+<dd>Data to be fitted</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def fit(self, data):
+    &#34;&#34;&#34;
+    Fit the rbm to the given data
+
+    Parameters
+    ----------
+    data : array
+        Data to be fitted
+    &#34;&#34;&#34;
     self.rbm.fit(data)
     min_likelyhood = np.mean(
         [np.mean(self.rbm.score_samples(data)) for _ in range(5)])
