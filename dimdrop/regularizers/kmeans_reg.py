@@ -27,7 +27,6 @@ class KMeansRegularizer(Callback):
         self.cluster_centers = cluster_centers
         self.batch_size = batch_size
         self.weight = K.variable(weight)
-        self.cluster_assignments = []
 
     def init_fit(self, encoder, input_data):
         """

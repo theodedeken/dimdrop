@@ -10,11 +10,21 @@ class Autoencoder:
     """
     A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.
 
-    The defaults are set to the parameters explained in the paper of Geoffrey Hinton.
+    The defaults are set to the parameters explained in a paper of Geoffrey Hinton.
+
+    Attributes
+    ----------
+    model :  keras model
+        The autoencoder model
+    encoder : keras model
+        The encoder model
+    layers : array of keras layers
+        The layers of the network
 
     References
     ----------
-    - TODO
+    - G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data with neural 
+        networks. *Science*, 313(5786):504–507, July 2006.
     """
 
     def __init__(
@@ -50,11 +60,12 @@ class Autoencoder:
         epochs : int, optional
             The maximum amount of epochs, default `1000`
         regularizer : keras regularizer, optional
-            A regularizer to use for the middle layer of the autoencoder. None or instance of KMeansRegularizer, GMMRegularizer, TSNERegularizer.
+            A regularizer to use for the middle layer of the autoencoder. 
+            `None` or instance of `dimdrop.regularizers.KMeansRegularizer`, `dimdrop.regularizers.GMMRegularizer`, `dimdrop.regularizers.TSNERegularizer`.
         pretrain_method : string, optional
-            The pretrain method to use. None, `'rbm'` or `'stacked'`
+            The pretrain method to use. `None`, `'rbm'` or `'stacked'`
         verbose : int, optional
-            The verbosity of the network
+            The verbosity of the network, default `0`
         """
         self.in_dim = in_dim
         self.out_dim = out_dim

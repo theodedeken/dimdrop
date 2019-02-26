@@ -30,19 +30,53 @@ import random
 
 
 class KMeansRegularizer(Callback):
+    &#34;&#34;&#34;
+    Custom keras regularizer to apply k-means loss to a network
+    &#34;&#34;&#34;
     __name__ = &#39;kmeans_regularizer&#39;
 
     def __init__(self, cluster_centers, batch_size=100, weight=0.5):
+        &#34;&#34;&#34;
+        Initialize the regularizer
+
+        Parameters
+        ----------
+        cluster_centers : array
+            The initial cluster centers
+        batch_size : int, optional
+            The batch size of the network
+        weight : float
+            The strength of the regularizer
+        &#34;&#34;&#34;
         self.cluster_centers = cluster_centers
         self.batch_size = batch_size
         self.weight = K.variable(weight)
-        self.cluster_assignments = []
 
     def init_fit(self, encoder, input_data):
+        &#34;&#34;&#34;
+        Initialize this regularizer for a fitting operation
+
+        Parameters
+        ----------
+        encoder : keras model
+            The encoder part of the model being fitted
+        input_data : array
+            The fitting data
+        &#34;&#34;&#34;
         self.encoder = encoder
         self.input_data = input_data
 
     def on_epoch_end(self, epoch, logs=None):
+        &#34;&#34;&#34;
+        Executed at the end of every epoch. Recalculates the cluster centers.
+
+        Parameters
+        ----------
+        epoch : int
+            The current epoch
+        logs : dictionary
+            The logs of the model
+        &#34;&#34;&#34;
         # update cluster centers
         encoding = self.encoder.predict(self.input_data)
         new_centers = np.zeros(self.cluster_centers.shape)
@@ -97,44 +131,57 @@ class KMeansRegularizer(Callback):
 <span>(</span><span><small>ancestors:</small> keras.callbacks.Callback)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Abstract base class used to build new callbacks.</p>
-<h1 id="properties">Properties</h1>
-<pre><code>params: dict. Training parameters
-    (eg. verbosity, batch size, number of epochs...).
-model: instance of `keras.models.Model`.
-    Reference of the model being trained.
-</code></pre>
-<p>The <code>logs</code> dictionary that callback methods
-take as argument will contain keys for quantities relevant to
-the current batch or epoch.</p>
-<p>Currently, the <code>.fit()</code> method of the <code>Sequential</code> model class
-will include the following quantities in the <code>logs</code> that
-it passes to its callbacks:</p>
-<pre><code>on_epoch_end: logs include `acc` and `loss`, and
-    optionally include `val_loss`
-    (if validation is enabled in `fit`), and `val_acc`
-    (if validation and accuracy monitoring are enabled).
-on_batch_begin: logs include `size`,
-    the number of samples in the current batch.
-on_batch_end: logs include `loss`, and optionally `acc`
-    (if accuracy monitoring is enabled).
-</code></pre></section>
+<section class="desc"><p>Custom keras regularizer to apply k-means loss to a network</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class KMeansRegularizer(Callback):
+    &#34;&#34;&#34;
+    Custom keras regularizer to apply k-means loss to a network
+    &#34;&#34;&#34;
     __name__ = &#39;kmeans_regularizer&#39;
 
     def __init__(self, cluster_centers, batch_size=100, weight=0.5):
+        &#34;&#34;&#34;
+        Initialize the regularizer
+
+        Parameters
+        ----------
+        cluster_centers : array
+            The initial cluster centers
+        batch_size : int, optional
+            The batch size of the network
+        weight : float
+            The strength of the regularizer
+        &#34;&#34;&#34;
         self.cluster_centers = cluster_centers
         self.batch_size = batch_size
         self.weight = K.variable(weight)
-        self.cluster_assignments = []
 
     def init_fit(self, encoder, input_data):
+        &#34;&#34;&#34;
+        Initialize this regularizer for a fitting operation
+
+        Parameters
+        ----------
+        encoder : keras model
+            The encoder part of the model being fitted
+        input_data : array
+            The fitting data
+        &#34;&#34;&#34;
         self.encoder = encoder
         self.input_data = input_data
 
     def on_epoch_end(self, epoch, logs=None):
+        &#34;&#34;&#34;
+        Executed at the end of every epoch. Recalculates the cluster centers.
+
+        Parameters
+        ----------
+        epoch : int
+            The current epoch
+        logs : dictionary
+            The logs of the model
+        &#34;&#34;&#34;
         # update cluster centers
         encoding = self.encoder.predict(self.input_data)
         new_centers = np.zeros(self.cluster_centers.shape)
@@ -180,25 +227,61 @@ on_batch_end: logs include `loss`, and optionally `acc`
 <span>def <span class="ident">__init__</span></span>(<span>self, cluster_centers, batch_size=100, weight=0.5)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Initialize self.
-See help(type(self)) for accurate signature.</p></section>
+<section class="desc"><p>Initialize the regularizer</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>cluster_centers</code></strong> :&ensp;<code>array</code></dt>
+<dd>The initial cluster centers</dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size of the network</dd>
+<dt><strong><code>weight</code></strong> :&ensp;<code>float</code></dt>
+<dd>The strength of the regularizer</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def __init__(self, cluster_centers, batch_size=100, weight=0.5):
+    &#34;&#34;&#34;
+    Initialize the regularizer
+
+    Parameters
+    ----------
+    cluster_centers : array
+        The initial cluster centers
+    batch_size : int, optional
+        The batch size of the network
+    weight : float
+        The strength of the regularizer
+    &#34;&#34;&#34;
     self.cluster_centers = cluster_centers
     self.batch_size = batch_size
-    self.weight = K.variable(weight)
-    self.cluster_assignments = []</code></pre>
+    self.weight = K.variable(weight)</code></pre>
 </details>
 </dd>
 <dt id="dimdrop.regularizers.kmeans_reg.KMeansRegularizer.init_fit"><code class="name flex">
 <span>def <span class="ident">init_fit</span></span>(<span>self, encoder, input_data)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Initialize this regularizer for a fitting operation</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>encoder</code></strong> :&ensp;<code>keras</code> <code>model</code></dt>
+<dd>The encoder part of the model being fitted</dd>
+<dt><strong><code>input_data</code></strong> :&ensp;<code>array</code></dt>
+<dd>The fitting data</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def init_fit(self, encoder, input_data):
+    &#34;&#34;&#34;
+    Initialize this regularizer for a fitting operation
+
+    Parameters
+    ----------
+    encoder : keras model
+        The encoder part of the model being fitted
+    input_data : array
+        The fitting data
+    &#34;&#34;&#34;
     self.encoder = encoder
     self.input_data = input_data</code></pre>
 </details>
@@ -207,10 +290,27 @@ See help(type(self)) for accurate signature.</p></section>
 <span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch, logs=None)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Executed at the end of every epoch. Recalculates the cluster centers.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>epoch</code></strong> :&ensp;<code>int</code></dt>
+<dd>The current epoch</dd>
+<dt><strong><code>logs</code></strong> :&ensp;<code>dictionary</code></dt>
+<dd>The logs of the model</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def on_epoch_end(self, epoch, logs=None):
+    &#34;&#34;&#34;
+    Executed at the end of every epoch. Recalculates the cluster centers.
+
+    Parameters
+    ----------
+    epoch : int
+        The current epoch
+    logs : dictionary
+        The logs of the model
+    &#34;&#34;&#34;
     # update cluster centers
     encoding = self.encoder.predict(self.input_data)
     new_centers = np.zeros(self.cluster_centers.shape)

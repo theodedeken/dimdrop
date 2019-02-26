@@ -69,7 +69,22 @@ class DeepCluster(Autoencoder):
 <span>(</span><span><small>ancestors:</small> <a title="dimdrop.models.autoencoder.Autoencoder" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder">Autoencoder</a>)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.</p>
+<p>The defaults are set to the parameters explained in a paper of Geoffrey Hinton.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>model</code></strong> :&ensp; <code>keras</code> <code>model</code></dt>
+<dd>The autoencoder model</dd>
+<dt><strong><code>encoder</code></strong> :&ensp;<code>keras</code> <code>model</code></dt>
+<dd>The encoder model</dd>
+<dt><strong><code>layers</code></strong> :&ensp;<code>array</code> of <code>keras</code> <code>layers</code></dt>
+<dd>The layers of the network</dd>
+</dl>
+<h2 id="references">References</h2>
+<ul>
+<li>G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data with neural
+networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
+</ul></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class DeepCluster(Autoencoder):
@@ -103,6 +118,9 @@ class DeepCluster(Autoencoder):
 <li><code><b><a title="dimdrop.models.autoencoder.Autoencoder" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder">Autoencoder</a></b></code>:
 <ul class="hlist">
 <li><code><a title="dimdrop.models.autoencoder.Autoencoder.__init__" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder.__init__">__init__</a></code></li>
+<li><code><a title="dimdrop.models.autoencoder.Autoencoder.fit" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder.fit">fit</a></code></li>
+<li><code><a title="dimdrop.models.autoencoder.Autoencoder.fit_transform" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder.fit_transform">fit_transform</a></code></li>
+<li><code><a title="dimdrop.models.autoencoder.Autoencoder.transform" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder.transform">transform</a></code></li>
 </ul>
 </li>
 </ul>
