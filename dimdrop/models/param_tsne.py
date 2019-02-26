@@ -10,11 +10,28 @@ from ..util.tsne import compute_joint_probabilities
 
 
 class ParametricTSNE:
+    """
+    Implementation of the parametric variant of t-distributed neighborhood embedding.
+
+    Attributes
+    ----------
+    model : keras Sequential model
+        The neural network
+    layers : keras layers
+        The layers of the neural network
+
+    References
+    ----------
+    - Laurens van der Maaten. Learning a parametric embedding by preserving local structure. 
+        In David van Dyk and Max Welling, editors, *Proceedings of the Twelth International 
+        Conference on Artificial Intelligence and Statistics*, volume 5 of *Proceedings of
+        Machine Learning Research*, pages 384–391, Hilton Clearwater Beach Resort, Clearwater 
+        Beach, Florida USA, 16–18 Apr 2009. PMLR.
+    """
+
     def __init__(self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-5, patience=3, epochs=1000, verbose=0):
         """
-        Parametric t-SNE.
-
-        Implementation of the parametric variant of t-distributed neighborhood embedding.
+        Initialize Parametric t-SNE object.
 
         Parameters
         ----------
@@ -40,15 +57,6 @@ class ParametricTSNE:
             Maximum amount of epochs, default `1000`
         verbose : int, optional
             Controls the verbosity of the model, default `0`
-
-
-        References
-        ----------
-        - Laurens van der Maaten. Learning a parametric embedding by preserving local structure. 
-        In David van Dyk and Max Welling, editors, *Proceedings of the Twelth International 
-        Conference on Artificial Intelligence and Statistics*, volume 5 of *Proceedings of
-        Machine Learning Research*, pages 384–391, Hilton Clearwater Beach Resort, Clearwater 
-        Beach, Florida USA, 16–18 Apr 2009. PMLR.
         """
         self.in_dim = in_dim
         self.out_dim = out_dim
@@ -66,7 +74,7 @@ class ParametricTSNE:
     def __init_network(self):
         if self.pretrain:
             self.rbms = [BernoulliRBM(batch_size=self.batch_size, learning_rate=self.lr,
-                                      n_components=num, n_iter=20, verbose=self.verbose) for num in self.layer_sizes]
+                                      n_components=num, n_iter=20, verbose=self.verbose) for num in self.layer_sizes + [self.out_dim]]
             activation = 'sigmoid'
         else:
             activation = 'relu'
@@ -100,6 +108,9 @@ class ParametricTSNE:
             rbm.fit(current)
             current = rbm.transform(current)
 
+            self.layers[i].set_weights(
+                [np.transpose(rbm.components_), rbm.intercept_hidden_])
+
     def fit(self, data):
         """
         Fit the given data to the model.
@@ -113,11 +124,6 @@ class ParametricTSNE:
             if self.verbose:
                 print('Pretraining network')
             self.__pretrain(data)
-
-        if self.pretrain:
-            for i, rbm in enumerate(self.rbms):
-                self.layers[i].set_weights(
-                    [np.transpose(rbm.components_), rbm.intercept_hidden_])
 
         early_stopping = EarlyStopping(monitor='loss', patience=self.patience)
 
@@ -146,7 +152,7 @@ class ParametricTSNE:
 
     def fit_transform(self, data):
         """
-        Fit the given data to the model en return its transformation
+        Fit the given data to the model and return its transformation
 
         Parameters
         ----------

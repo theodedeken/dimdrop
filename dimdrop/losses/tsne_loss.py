@@ -4,9 +4,22 @@ from keras import backend as K
 
 
 class TSNELoss:
+    """
+    Custom keras loss function implementing the cost function of t-SNE
+    """
     __name__ = 'tsne_loss'
 
     def __init__(self, dim, batch_size):
+        """
+        Initialize the loss function
+
+        Parameters
+        ----------
+        dim : int
+            The dimension of the output of the network
+        batch_size : int
+            The batch size of the network
+        """
         self.dim = dim
         self.batch_size = batch_size
 
