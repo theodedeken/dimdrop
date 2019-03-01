@@ -25,9 +25,10 @@
 <pre><code class="python">from .param_tsne import ParametricTSNE
 from .autoencoder import Autoencoder
 from .deepcluster import DeepCluster
+from .vasc import VASC
 
 __all__ = [
-    &#39;ParametricTSNE&#39;, &#39;Autoencoder&#39;, &#39;DeepCluster&#39;
+    &#39;ParametricTSNE&#39;, &#39;Autoencoder&#39;, &#39;DeepCluster&#39;, &#39;VASC&#39;
 ]</code></pre>
 </details>
 </section>
@@ -45,6 +46,10 @@ __all__ = [
 <dt><code class="name"><a title="dimdrop.models.param_tsne" href="param_tsne.html">dimdrop.models.param_tsne</a></code></dt>
 <dd>
 <section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="dimdrop.models.vasc" href="vasc.html">dimdrop.models.vasc</a></code></dt>
+<dd>
+<section class="desc"><p>Code adapted from https://github.com/wang-research/VASC</p></section>
 </dd>
 </dl>
 </section>
@@ -867,6 +872,382 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 </dd>
 </dl>
 </dd>
+<dt id="dimdrop.models.VASC"><code class="flex name class">
+<span>class <span class="ident">VASC</span></span>
+</code></dt>
+<dd>
+<section class="desc"><dl>
+<dt><strong><a title="dimdrop.models.VASC" href="#dimdrop.models.VASC"><code>VASC</code></a></strong> :&ensp;<code>variational</code> <a title="dimdrop.models.autoencoder" href="autoencoder.html"><code>dimdrop.models.autoencoder</code></a> <code>for</code> <code>scRNA</code>-<code>seq</code> <code>datasets</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class VASC:
+    &#34;&#34;&#34;
+    VASC: variational autoencoder for scRNA-seq datasets
+    &#34;&#34;&#34;
+
+    def __init__(
+            self,
+            in_dim,
+            out_dim,
+            epochs=1000,
+            patience=3,
+            batch_size=100,
+            lr=0.01,
+            var=False,
+            log=True,
+            scale=True,
+            verbose=0):
+        &#34;&#34;&#34;
+        Parameters:
+        -----------
+        in_dim : int
+            The input dimension
+        out_dim : int
+            The output dimension
+        epochs: int, optional
+            Maximum number of epochs, default `5000`
+        patience: int, optional
+            The amount of epochs without improvement before the network stops training, default `3`
+        batch_size: int, optional
+            The batch size for stochastic optimization, default `100`
+        lr : float, optional
+            The learning rate of the network, default `0.01`
+        var: boolean, optional
+            Whether to estimate the variance parameters, default `False`
+        log: boolean, optional
+            Whether log-transformation should be performed, default `True`
+        scale: boolean, optional
+            Whether scaling (making values within [0,1]) should be performed, default `True`
+        &#34;&#34;&#34;
+        self.in_dim = in_dim
+        self.out_dim = out_dim
+        self.epochs = epochs
+        self.patience = patience
+        self.batch_size = batch_size
+        self.lr = lr
+        self.var = var
+        self.log = log
+        self.scale = scale
+        self.verbose = verbose
+        self.__init_network()
+
+    def __init_network(self):
+        in_dim = self.in_dim
+        expr_in = Input(shape=(self.in_dim,))
+
+        # The first part of model to recover the expr.
+        h0 = Dropout(0.5)(expr_in)
+        # Encoder layers
+        h1 = Dense(units=512, name=&#39;encoder_1&#39;,
+                   kernel_regularizer=regularizers.l1(0.01))(h0)
+        h2 = Dense(units=128, name=&#39;encoder_2&#39;)(h1)
+        h2_relu = Activation(&#39;relu&#39;)(h2)
+        h3 = Dense(units=32, name=&#39;encoder_3&#39;)(h2_relu)
+        h3_relu = Activation(&#39;relu&#39;)(h3)
+
+        z_mean = Dense(units=self.out_dim, name=&#39;z_mean&#39;)(h3_relu)
+        z_log_var = None
+        if self.var:
+            z_log_var = Dense(units=2, name=&#39;z_log_var&#39;)(h3_relu)
+            z_log_var = Activation(&#39;softplus&#39;)(z_log_var)
+
+        # sampling new samples
+            z = Lambda(sampling, output_shape=(
+                self.out_dim,))([z_mean, z_log_var])
+        else:
+            z = Lambda(sampling, output_shape=(self.out_dim,))([z_mean])
+
+        # Decoder layers
+        decoder_h1 = Dense(units=32, name=&#39;decoder_1&#39;)(z)
+        decoder_h1_relu = Activation(&#39;relu&#39;)(decoder_h1)
+        decoder_h2 = Dense(units=128, name=&#39;decoder_2&#39;)(decoder_h1_relu)
+        decoder_h2_relu = Activation(&#39;relu&#39;)(decoder_h2)
+        decoder_h3 = Dense(units=512, name=&#39;decoder_3&#39;)(decoder_h2_relu)
+        decoder_h3_relu = Activation(&#39;relu&#39;)(decoder_h3)
+        expr_x = Dense(units=self.in_dim, activation=&#39;sigmoid&#39;)(
+            decoder_h3_relu)
+
+        expr_x_drop = Lambda(lambda x: -x ** 2)(expr_x)
+        expr_x_drop_p = Lambda(lambda x: K.exp(x))(expr_x_drop)
+        expr_x_nondrop_p = Lambda(lambda x: 1-x)(expr_x_drop_p)
+        expr_x_nondrop_log = Lambda(lambda x: K.log(x+1e-20))(expr_x_nondrop_p)
+        expr_x_drop_log = Lambda(lambda x: K.log(x+1e-20))(expr_x_drop_p)
+        expr_x_drop_log = Reshape(target_shape=(
+            self.in_dim, 1))(expr_x_drop_log)
+        expr_x_nondrop_log = Reshape(target_shape=(
+            self.in_dim, 1))(expr_x_nondrop_log)
+        logits = concatenate(
+            [expr_x_drop_log, expr_x_nondrop_log], axis=-1)
+
+        temp_in = Input(shape=(self.in_dim,))
+        temp_ = RepeatVector(2)(temp_in)
+
+        temp_ = Permute((2, 1))(temp_)
+        samples = Lambda(gumbel_softmax, output_shape=(
+            self.in_dim, 2,))([logits, temp_])
+        samples = Lambda(lambda x: x[:, :, 1])(samples)
+        samples = Reshape(target_shape=(self.in_dim,))(samples)
+
+        out = multiply([expr_x, samples])
+
+        vae = Model(inputs=[expr_in, temp_in], outputs=out)
+
+        loss_func = VAELoss(in_dim, z_log_var, z_mean)
+
+        opt = RMSprop(lr=self.lr)
+        vae.compile(optimizer=opt, loss=loss_func)
+
+        ae = Model(inputs=[expr_in, temp_in], outputs=[h1, h2, h3, h2_relu, h3_relu,
+                                                       z_mean, z, decoder_h1, decoder_h1_relu,
+                                                       decoder_h2, decoder_h2_relu, decoder_h3, decoder_h3_relu,
+                                                       samples, out
+                                                       ])
+
+        self.vae = vae
+        self.ae = ae
+
+        if self.verbose:
+            self.vae.summary()
+
+    def fit(self, data):
+        &#34;&#34;&#34;
+        Fit the given data to the model.
+
+        Parameters
+        ----------
+        data : array
+            Array of training samples where each sample is of size `in_dim`
+        &#34;&#34;&#34;
+        if self.log:
+            data = np.log2(data + 1)
+        if self.scale:
+            for i in range(data.shape[0]):
+                data[i, :] = data[i, :] / np.max(data[i, :])
+
+        tau_in = np.ones(data.shape, dtype=&#39;float32&#39;)
+
+        early_stopping = EarlyStopping(monitor=&#39;loss&#39;, patience=self.patience)
+
+        self.vae.fit([data, tau_in], data, epochs=self.epochs, batch_size=self.batch_size,
+                     shuffle=True, verbose=self.verbose, callbacks=[early_stopping])
+
+    def fit_transform(self, data):
+        &#34;&#34;&#34;
+        Fit the given data to the model and return its transformation
+
+        Parameters
+        ----------
+        data : array
+            Array of training samples where each sample is of size `in_dim`
+
+        Returns
+        -------
+        array
+            Transformed samples, where each sample is of size `out_dim`
+        &#34;&#34;&#34;
+        self.fit(data)
+        return self.transform(data)
+
+    def transform(self, data):
+        &#34;&#34;&#34;
+        Transform the given data
+
+        Parameters
+        ----------
+        data : array
+            Array of samples to be transformed, where each sample is of size `in_dim`
+
+        Returns
+        -------
+        array
+            Transformed samples, where each sample is of size `out_dim`
+        &#34;&#34;&#34;
+        return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="dimdrop.models.VASC.__init__"><code class="name flex">
+<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=True, scale=True, verbose=0)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="parameters">Parameters:</h2>
+<dl>
+<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The input dimension</dd>
+<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The output dimension</dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Maximum number of epochs, default <code>5000</code></dd>
+<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The amount of epochs without improvement before the network stops training, default <code>3</code></dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size for stochastic optimization, default <code>100</code></dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>var</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether to estimate the variance parameters, default <code>False</code></dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether log-transformation should be performed, default <code>True</code></dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def __init__(
+        self,
+        in_dim,
+        out_dim,
+        epochs=1000,
+        patience=3,
+        batch_size=100,
+        lr=0.01,
+        var=False,
+        log=True,
+        scale=True,
+        verbose=0):
+    &#34;&#34;&#34;
+    Parameters:
+    -----------
+    in_dim : int
+        The input dimension
+    out_dim : int
+        The output dimension
+    epochs: int, optional
+        Maximum number of epochs, default `5000`
+    patience: int, optional
+        The amount of epochs without improvement before the network stops training, default `3`
+    batch_size: int, optional
+        The batch size for stochastic optimization, default `100`
+    lr : float, optional
+        The learning rate of the network, default `0.01`
+    var: boolean, optional
+        Whether to estimate the variance parameters, default `False`
+    log: boolean, optional
+        Whether log-transformation should be performed, default `True`
+    scale: boolean, optional
+        Whether scaling (making values within [0,1]) should be performed, default `True`
+    &#34;&#34;&#34;
+    self.in_dim = in_dim
+    self.out_dim = out_dim
+    self.epochs = epochs
+    self.patience = patience
+    self.batch_size = batch_size
+    self.lr = lr
+    self.var = var
+    self.log = log
+    self.scale = scale
+    self.verbose = verbose
+    self.__init_network()</code></pre>
+</details>
+</dd>
+<dt id="dimdrop.models.VASC.fit"><code class="name flex">
+<span>def <span class="ident">fit</span></span>(<span>self, data)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Fit the given data to the model.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
+<dd>Array of training samples where each sample is of size <code>in_dim</code></dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def fit(self, data):
+    &#34;&#34;&#34;
+    Fit the given data to the model.
+
+    Parameters
+    ----------
+    data : array
+        Array of training samples where each sample is of size `in_dim`
+    &#34;&#34;&#34;
+    if self.log:
+        data = np.log2(data + 1)
+    if self.scale:
+        for i in range(data.shape[0]):
+            data[i, :] = data[i, :] / np.max(data[i, :])
+
+    tau_in = np.ones(data.shape, dtype=&#39;float32&#39;)
+
+    early_stopping = EarlyStopping(monitor=&#39;loss&#39;, patience=self.patience)
+
+    self.vae.fit([data, tau_in], data, epochs=self.epochs, batch_size=self.batch_size,
+                 shuffle=True, verbose=self.verbose, callbacks=[early_stopping])</code></pre>
+</details>
+</dd>
+<dt id="dimdrop.models.VASC.fit_transform"><code class="name flex">
+<span>def <span class="ident">fit_transform</span></span>(<span>self, data)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Fit the given data to the model and return its transformation</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
+<dd>Array of training samples where each sample is of size <code>in_dim</code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>array</code></strong></dt>
+<dd>Transformed samples, where each sample is of size <code>out_dim</code></dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def fit_transform(self, data):
+    &#34;&#34;&#34;
+    Fit the given data to the model and return its transformation
+
+    Parameters
+    ----------
+    data : array
+        Array of training samples where each sample is of size `in_dim`
+
+    Returns
+    -------
+    array
+        Transformed samples, where each sample is of size `out_dim`
+    &#34;&#34;&#34;
+    self.fit(data)
+    return self.transform(data)</code></pre>
+</details>
+</dd>
+<dt id="dimdrop.models.VASC.transform"><code class="name flex">
+<span>def <span class="ident">transform</span></span>(<span>self, data)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Transform the given data</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
+<dd>Array of samples to be transformed, where each sample is of size <code>in_dim</code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>array</code></strong></dt>
+<dd>Transformed samples, where each sample is of size <code>out_dim</code></dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def transform(self, data):
+    &#34;&#34;&#34;
+    Transform the given data
+
+    Parameters
+    ----------
+    data : array
+        Array of samples to be transformed, where each sample is of size `in_dim`
+
+    Returns
+    -------
+    array
+        Transformed samples, where each sample is of size `out_dim`
+    &#34;&#34;&#34;
+    return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -886,6 +1267,7 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 <li><code><a title="dimdrop.models.autoencoder" href="autoencoder.html">dimdrop.models.autoencoder</a></code></li>
 <li><code><a title="dimdrop.models.deepcluster" href="deepcluster.html">dimdrop.models.deepcluster</a></code></li>
 <li><code><a title="dimdrop.models.param_tsne" href="param_tsne.html">dimdrop.models.param_tsne</a></code></li>
+<li><code><a title="dimdrop.models.vasc" href="vasc.html">dimdrop.models.vasc</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
@@ -909,6 +1291,15 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 <li><code><a title="dimdrop.models.ParametricTSNE.fit" href="#dimdrop.models.ParametricTSNE.fit">fit</a></code></li>
 <li><code><a title="dimdrop.models.ParametricTSNE.fit_transform" href="#dimdrop.models.ParametricTSNE.fit_transform">fit_transform</a></code></li>
 <li><code><a title="dimdrop.models.ParametricTSNE.transform" href="#dimdrop.models.ParametricTSNE.transform">transform</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="dimdrop.models.VASC" href="#dimdrop.models.VASC">VASC</a></code></h4>
+<ul class="">
+<li><code><a title="dimdrop.models.VASC.__init__" href="#dimdrop.models.VASC.__init__">__init__</a></code></li>
+<li><code><a title="dimdrop.models.VASC.fit" href="#dimdrop.models.VASC.fit">fit</a></code></li>
+<li><code><a title="dimdrop.models.VASC.fit_transform" href="#dimdrop.models.VASC.fit_transform">fit_transform</a></code></li>
+<li><code><a title="dimdrop.models.VASC.transform" href="#dimdrop.models.VASC.transform">transform</a></code></li>
 </ul>
 </li>
 </ul>
