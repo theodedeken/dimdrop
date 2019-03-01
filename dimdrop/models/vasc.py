@@ -176,7 +176,7 @@ class VASC:
             # print(tau_in.shape)
 
             loss_ = self.vae.fit([expr_train, self.tau_in], expr_train, epochs=1, batch_size=self.batch_size,
-                                 shuffle=True, verbose=0
+                                 shuffle=True, verbose=self.verbose
                                  )
             train_loss = loss_.history['loss'][0]
             cur_loss = min(train_loss, cur_loss)
