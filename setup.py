@@ -16,7 +16,8 @@ setuptools.setup(
     install_requires=[
         "numpy",
         "keras",
-        "sklearn"
+        "sklearn",
+        "tensorflow"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
