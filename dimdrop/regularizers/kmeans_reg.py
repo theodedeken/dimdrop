@@ -8,22 +8,19 @@ import random
 class KMeansRegularizer(Callback):
     """
     Custom keras regularizer to apply k-means loss to a network
+
+    Parameters
+    ----------
+    cluster_centers : array
+        The initial cluster centers
+    batch_size : int, optional
+        The batch size of the network
+    weight : float
+        The strength of the regularizer
     """
     __name__ = 'kmeans_regularizer'
 
     def __init__(self, cluster_centers, batch_size=100, weight=0.5):
-        """
-        Initialize the regularizer
-
-        Parameters
-        ----------
-        cluster_centers : array
-            The initial cluster centers
-        batch_size : int, optional
-            The batch size of the network
-        weight : float
-            The strength of the regularizer
-        """
         self.cluster_centers = cluster_centers
         self.batch_size = batch_size
         self.weight = K.variable(weight)

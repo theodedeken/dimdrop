@@ -13,6 +13,31 @@ class ParametricTSNE:
     """
     Implementation of the parametric variant of t-distributed neighborhood embedding.
 
+    Parameters
+    ----------
+    in_dim : int
+        The input dimension
+    out_dim : int
+        The output dimension
+    layer_sizes : array, optional
+        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[500, 2000, 2000]`
+    lr : float, optional
+        The learning rate of the network, default `0.01`
+    batch_size : int, optional
+        The batch size of the network, default `100`
+    pretrain : int, optional
+        Whether to perform pretraining using Restricted Boltzmann Machines, default `False`
+    perplexity : int, optional
+        Perplexity parameter in the t-SNE formula, controls how many neighbors are considered in the local neighborhood, default `30`
+    tol : float, optional
+        Tolerance of the perplexity, default `1e-5`
+    patience : int, optional
+        The amount of epochs without improvement before fitting will stop early, default `3`
+    epochs : int, optional
+        Maximum amount of epochs, default `1000`
+    verbose : int, optional
+        Controls the verbosity of the model, default `0`
+
     Attributes
     ----------
     model : keras Sequential model
@@ -30,34 +55,6 @@ class ParametricTSNE:
     """
 
     def __init__(self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-5, patience=3, epochs=1000, verbose=0):
-        """
-        Initialize Parametric t-SNE object.
-
-        Parameters
-        ----------
-        in_dim : int
-            The input dimension
-        out_dim : int
-            The output dimension
-        layer_sizes : array, optional
-            sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[500, 2000, 2000]`
-        lr : float, optional
-            The learning rate of the network, default `0.01`
-        batch_size : int, optional
-            The batch size of the network, default `100`
-        pretrain : int, optional
-            Whether to perform pretraining using Restricted Boltzmann Machines, default `False`
-        perplexity : int, optional
-            Perplexity parameter in the t-SNE formula, controls how many neighbors are considered in the local neighborhood, default `30`
-        tol : float, optional
-            Tolerance of the perplexity, default `1e-5`
-        patience : int, optional
-            The amount of epochs without improvement before fitting will stop early, default `3`
-        epochs : int, optional
-            Maximum amount of epochs, default `1000`
-        verbose : int, optional
-            Controls the verbosity of the model, default `0`
-        """
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.layer_sizes = layer_sizes

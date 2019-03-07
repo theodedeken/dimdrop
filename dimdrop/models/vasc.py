@@ -21,6 +21,35 @@ from ..losses import VAELoss
 class VASC:
     """
     VASC: variational autoencoder for scRNA-seq datasets
+
+    Parameters:
+    -----------
+    in_dim : int
+        The input dimension
+    out_dim : int
+        The output dimension
+    epochs: int, optional
+        Maximum number of epochs, default `5000`
+    patience: int, optional
+        The amount of epochs without improvement before the network stops training, default `3`
+    batch_size: int, optional
+        The batch size for stochastic optimization, default `100`
+    lr : float, optional
+        The learning rate of the network, default `0.01`
+    var: boolean, optional
+        Whether to estimate the variance parameters, default `False`
+    log: boolean, optional
+        Whether log-transformation should be performed, default `True`
+    scale: boolean, optional
+        Whether scaling (making values within [0,1]) should be performed, default `True`
+
+    Attributes:
+    -----------
+    TODO
+
+    References:
+    -----------
+    TODO
     """
 
     def __init__(
@@ -35,28 +64,6 @@ class VASC:
             log=True,
             scale=True,
             verbose=0):
-        """
-        Parameters:
-        -----------
-        in_dim : int
-            The input dimension
-        out_dim : int
-            The output dimension
-        epochs: int, optional
-            Maximum number of epochs, default `5000`
-        patience: int, optional
-            The amount of epochs without improvement before the network stops training, default `3`
-        batch_size: int, optional
-            The batch size for stochastic optimization, default `100`
-        lr : float, optional
-            The learning rate of the network, default `0.01`
-        var: boolean, optional
-            Whether to estimate the variance parameters, default `False`
-        log: boolean, optional
-            Whether log-transformation should be performed, default `True`
-        scale: boolean, optional
-            Whether scaling (making values within [0,1]) should be performed, default `True`
-        """
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.epochs = epochs

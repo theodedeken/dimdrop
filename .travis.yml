@@ -1,6 +1,9 @@
 language: python
 cache: pip
-script: python -c '0==0' # Only if script succeeds we can deploy
+install:
+  - pip3 install -e .
+  - pip3 install pdoc3
+script: pdoc3 --html dimdrop
 deploy:
   provider: pages
   local-dir: html/dimdrop
