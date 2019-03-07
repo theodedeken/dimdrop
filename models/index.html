@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.5.2" />
+<meta name="generator" content="pdoc 0.5.3" />
 <title>dimdrop.models API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}#index .two-column{column-count:2}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.name small{font-weight:normal}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.name small{font-weight:normal}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 </head>
@@ -26,9 +26,10 @@
 from .autoencoder import Autoencoder
 from .deepcluster import DeepCluster
 from .vasc import VASC
+from .dec import DEC
 
 __all__ = [
-    &#39;ParametricTSNE&#39;, &#39;Autoencoder&#39;, &#39;DeepCluster&#39;, &#39;VASC&#39;
+    &#39;ParametricTSNE&#39;, &#39;Autoencoder&#39;, &#39;DeepCluster&#39;, &#39;VASC&#39;, &#39;DEC&#39;
 ]</code></pre>
 </details>
 </section>
@@ -36,6 +37,10 @@ __all__ = [
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
 <dt><code class="name"><a title="dimdrop.models.autoencoder" href="autoencoder.html">dimdrop.models.autoencoder</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="dimdrop.models.dec" href="dec.html">dimdrop.models.dec</a></code></dt>
 <dd>
 <section class="desc"></section>
 </dd>
@@ -49,7 +54,7 @@ __all__ = [
 </dd>
 <dt><code class="name"><a title="dimdrop.models.vasc" href="vasc.html">dimdrop.models.vasc</a></code></dt>
 <dd>
-<section class="desc"><p>Code adapted from https://github.com/wang-research/VASC</p></section>
+<section class="desc"><p>Code adapted from <a href="https://github.com/wang-research/VASC">https://github.com/wang-research/VASC</a></p></section>
 </dd>
 </dl>
 </section>
@@ -66,6 +71,30 @@ __all__ = [
 <dd>
 <section class="desc"><p>A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.</p>
 <p>The defaults are set to the parameters explained in a paper of Geoffrey Hinton.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The input dimension</dd>
+<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The output dimension</dd>
+<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code> of <code>int</code>, optional</dt>
+<dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size of the network, default <code>100</code></dd>
+<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The amount of epochs without improvement before the network stops training, default <code>3</code></dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The maximum amount of epochs, default <code>1000</code></dd>
+<dt><strong><code>regularizer</code></strong> :&ensp;<code>keras</code> <code>regularizer</code>, optional</dt>
+<dd>A regularizer to use for the middle layer of the autoencoder.
+<code>None</code> or instance of <a title="dimdrop.regularizers.KMeansRegularizer" href="../regularizers/index.html#dimdrop.regularizers.KMeansRegularizer"><code>KMeansRegularizer</code></a>, <code>dimdrop.regularizers.GMMRegularizer</code>, <a title="dimdrop.regularizers.TSNERegularizer" href="../regularizers/index.html#dimdrop.regularizers.TSNERegularizer"><code>TSNERegularizer</code></a>.</dd>
+<dt><strong><code>pretrain_method</code></strong> :&ensp;<code>string</code>, optional</dt>
+<dd>The pretrain method to use. <code>None</code>, <code>'rbm'</code> or <code>'stacked'</code></dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The verbosity of the network, default <code>0</code></dd>
+</dl>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>model</code></strong> :&ensp; <code>keras</code> <code>model</code></dt>
@@ -87,6 +116,30 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
     A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.
 
     The defaults are set to the parameters explained in a paper of Geoffrey Hinton.
+
+    Parameters
+    ----------
+    in_dim : int 
+        The input dimension
+    out_dim : int
+        The output dimension
+    layer_sizes : array of int, optional
+        The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
+    lr : float, optional 
+        The learning rate of the network, default `0.01`
+    batch_size : int, optional
+        The batch size of the network, default `100`
+    patience : int, optional
+        The amount of epochs without improvement before the network stops training, default `3`
+    epochs : int, optional
+        The maximum amount of epochs, default `1000`
+    regularizer : keras regularizer, optional
+        A regularizer to use for the middle layer of the autoencoder. 
+        `None` or instance of `dimdrop.regularizers.KMeansRegularizer`, `dimdrop.regularizers.GMMRegularizer`, `dimdrop.regularizers.TSNERegularizer`.
+    pretrain_method : string, optional
+        The pretrain method to use. `None`, `&#39;rbm&#39;` or `&#39;stacked&#39;`
+    verbose : int, optional
+        The verbosity of the network, default `0`
 
     Attributes
     ----------
@@ -116,33 +169,6 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         pretrain_method=&#39;rbm&#39;,
         verbose=0
     ):
-        &#34;&#34;&#34;
-        Initialize the autoencoder.
-
-        Parameters
-        ----------
-        in_dim : int 
-            The input dimension
-        out_dim : int
-            The output dimension
-        layer_sizes : array of int, optional
-            The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
-        lr : float, optional 
-            The learning rate of the network, default `0.01`
-        batch_size : int, optional
-            The batch size of the network, default `100`
-        patience : int, optional
-            The amount of epochs without improvement before the network stops training, default `3`
-        epochs : int, optional
-            The maximum amount of epochs, default `1000`
-        regularizer : keras regularizer, optional
-            A regularizer to use for the middle layer of the autoencoder. 
-            `None` or instance of `dimdrop.regularizers.KMeansRegularizer`, `dimdrop.regularizers.GMMRegularizer`, `dimdrop.regularizers.TSNERegularizer`.
-        pretrain_method : string, optional
-            The pretrain method to use. `None`, `&#39;rbm&#39;` or `&#39;stacked&#39;`
-        verbose : int, optional
-            The verbosity of the network, default `0`
-        &#34;&#34;&#34;
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.layer_sizes = layer_sizes
@@ -153,7 +179,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         self.regularizer = regularizer
         self.pretrain_method = pretrain_method
         self.verbose = verbose
-        self.__pretrainers = {&#39;rbm&#39;: self.__pretrain_rbm}
+        self.__pretrainers = {&#39;rbm&#39;: self.__pretrain_rbm,
+                              &#39;stacked&#39;: self.__pretrain_stacked}
         self.__init_network()
 
     def __init_network(self):
@@ -173,14 +200,10 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         )
         self.model.compile(
             loss=&#39;mse&#39;,
-            optimizer=SGD(lr=self.lr)
+            optimizer=Adam(lr=self.lr)
         )
         self.encoder = Sequential(
             self.layers[:len(self.layers) // 2]
-        )
-        self.model.compile(
-            loss=&#39;mse&#39;,
-            optimizer=Adam(lr=self.lr)
         )
 
     def __pretrain_rbm(self, data):
@@ -198,6 +221,35 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
                 [rbm.components_, dec_layer.get_weights()[1]])
             enc_layer.set_weights(
                 [np.transpose(rbm.components_), enc_layer.get_weights()[1]])
+
+    def __pretrain_stacked(self, data):
+        num_layers = len(self.layers)
+        cur_data = data
+        early_stopping = EarlyStopping(monitor=&#34;loss&#34;, patience=self.patience)
+        input_shapes = [(el,) for el in [self.in_dim] + self.layer_sizes]
+        for i in range(num_layers // 2):
+            if self.verbose:
+                print(&#39;Training Stack {}/{}&#39;.format(i+1, num_layers // 2))
+
+            stack = Sequential([
+                Dropout(0.2, input_shape=input_shapes[i]),
+                self.layers[i],
+                Dropout(0.2),
+                self.layers[num_layers - i - 1]
+            ])
+
+            input_layer = Input(shape=input_shapes[i])
+            encoder_layer = self.layers[i](input_layer)
+            stack_encode = Model(input_layer, encoder_layer)
+
+            stack.compile(
+                loss=&#39;mse&#39;,
+                optimizer=Adam(lr=self.lr)
+            )
+
+            stack.fit(cur_data, cur_data, epochs=self.epochs, callbacks=[early_stopping],
+                      batch_size=self.batch_size, verbose=self.verbose)
+            cur_data = stack_encode.predict(cur_data)
 
     def fit(self, data):
         &#34;&#34;&#34;
@@ -255,6 +307,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="dimdrop.models.deepcluster.DeepCluster" href="deepcluster.html#dimdrop.models.deepcluster.DeepCluster">DeepCluster</a></li>
+<li><a title="dimdrop.models.dec.DEC" href="dec.html#dimdrop.models.dec.DEC">DEC</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -262,31 +315,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, layer_sizes=[2000, 1000, 500], lr=0.01, batch_size=100, patience=3, epochs=1000, regularizer=None, pretrain_method=&#39;rbm&#39;, verbose=0)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Initialize the autoencoder.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The input dimension</dd>
-<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The output dimension</dd>
-<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code> of <code>int</code>, optional</dt>
-<dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
-<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
-<dd>The learning rate of the network, default <code>0.01</code></dd>
-<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The batch size of the network, default <code>100</code></dd>
-<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The amount of epochs without improvement before the network stops training, default <code>3</code></dd>
-<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The maximum amount of epochs, default <code>1000</code></dd>
-<dt><strong><code>regularizer</code></strong> :&ensp;<code>keras</code> <code>regularizer</code>, optional</dt>
-<dd>A regularizer to use for the middle layer of the autoencoder.
-<code>None</code> or instance of <a title="dimdrop.regularizers.KMeansRegularizer" href="../regularizers/index.html#dimdrop.regularizers.KMeansRegularizer"><code>KMeansRegularizer</code></a>, <code>dimdrop.regularizers.GMMRegularizer</code>, <a title="dimdrop.regularizers.TSNERegularizer" href="../regularizers/index.html#dimdrop.regularizers.TSNERegularizer"><code>TSNERegularizer</code></a>.</dd>
-<dt><strong><code>pretrain_method</code></strong> :&ensp;<code>string</code>, optional</dt>
-<dd>The pretrain method to use. <code>None</code>, <code>'rbm'</code> or <code>'stacked'</code></dd>
-<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The verbosity of the network, default <code>0</code></dd>
-</dl></section>
+<section class="desc"><p>Initialize self.
+See help(type(self)) for accurate signature.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def __init__(
@@ -302,33 +332,6 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
     pretrain_method=&#39;rbm&#39;,
     verbose=0
 ):
-    &#34;&#34;&#34;
-    Initialize the autoencoder.
-
-    Parameters
-    ----------
-    in_dim : int 
-        The input dimension
-    out_dim : int
-        The output dimension
-    layer_sizes : array of int, optional
-        The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
-    lr : float, optional 
-        The learning rate of the network, default `0.01`
-    batch_size : int, optional
-        The batch size of the network, default `100`
-    patience : int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
-    epochs : int, optional
-        The maximum amount of epochs, default `1000`
-    regularizer : keras regularizer, optional
-        A regularizer to use for the middle layer of the autoencoder. 
-        `None` or instance of `dimdrop.regularizers.KMeansRegularizer`, `dimdrop.regularizers.GMMRegularizer`, `dimdrop.regularizers.TSNERegularizer`.
-    pretrain_method : string, optional
-        The pretrain method to use. `None`, `&#39;rbm&#39;` or `&#39;stacked&#39;`
-    verbose : int, optional
-        The verbosity of the network, default `0`
-    &#34;&#34;&#34;
     self.in_dim = in_dim
     self.out_dim = out_dim
     self.layer_sizes = layer_sizes
@@ -339,7 +342,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
     self.regularizer = regularizer
     self.pretrain_method = pretrain_method
     self.verbose = verbose
-    self.__pretrainers = {&#39;rbm&#39;: self.__pretrain_rbm}
+    self.__pretrainers = {&#39;rbm&#39;: self.__pretrain_rbm,
+                          &#39;stacked&#39;: self.__pretrain_stacked}
     self.__init_network()</code></pre>
 </details>
 </dd>
@@ -447,6 +451,111 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 </dd>
 </dl>
 </dd>
+<dt id="dimdrop.models.DEC"><code class="flex name class">
+<span>class <span class="ident">DEC</span></span>
+<span>(</span><span><small>ancestors:</small> <a title="dimdrop.models.autoencoder.Autoencoder" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder">Autoencoder</a>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.</p>
+<p>The defaults are set to the parameters explained in a paper of Geoffrey Hinton.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The input dimension</dd>
+<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The output dimension</dd>
+<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code> of <code>int</code>, optional</dt>
+<dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size of the network, default <code>100</code></dd>
+<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The amount of epochs without improvement before the network stops training, default <code>3</code></dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The maximum amount of epochs, default <code>1000</code></dd>
+<dt><strong><code>regularizer</code></strong> :&ensp;<code>keras</code> <code>regularizer</code>, optional</dt>
+<dd>A regularizer to use for the middle layer of the autoencoder.
+<code>None</code> or instance of <a title="dimdrop.regularizers.KMeansRegularizer" href="../regularizers/index.html#dimdrop.regularizers.KMeansRegularizer"><code>KMeansRegularizer</code></a>, <code>dimdrop.regularizers.GMMRegularizer</code>, <a title="dimdrop.regularizers.TSNERegularizer" href="../regularizers/index.html#dimdrop.regularizers.TSNERegularizer"><code>TSNERegularizer</code></a>.</dd>
+<dt><strong><code>pretrain_method</code></strong> :&ensp;<code>string</code>, optional</dt>
+<dd>The pretrain method to use. <code>None</code>, <code>'rbm'</code> or <code>'stacked'</code></dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The verbosity of the network, default <code>0</code></dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>model</code></strong> :&ensp; <code>keras</code> <code>model</code></dt>
+<dd>The autoencoder model</dd>
+<dt><strong><code>encoder</code></strong> :&ensp;<code>keras</code> <code>model</code></dt>
+<dd>The encoder model</dd>
+<dt><strong><code>layers</code></strong> :&ensp;<code>array</code> of <code>keras</code> <code>layers</code></dt>
+<dd>The layers of the network</dd>
+</dl>
+<h2 id="references">References</h2>
+<ul>
+<li>G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data with neural
+networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
+</ul></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class DEC(Autoencoder):
+    def __init__(
+            self,
+            in_dim,
+            out_dim,
+            k,
+            layer_sizes=[500, 500, 2000],
+            epochs=1000,
+            lr=0.1,
+            batch_size=256,
+            patience=3,
+            tol=0.01,
+            verbose=0):
+        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
+                         epochs=epochs, regularizer=None, pretrain_method=&#39;stacked&#39;, verbose=verbose)
+        self.k = k
+        self.tol = tol
+
+    def fit(self, data):
+        super().fit(data)
+        clustering_layer = ClusteringLayer(
+            self.k, name=&#39;clustering&#39;)(self.encoder.output)
+
+        if self.verbose:
+            print(&#39;Initializing cluster centers&#39;)
+
+        kmeans = KMeans(n_clusters=self.k, n_init=20)
+        y_pred = kmeans.fit_predict(self.encoder.predict(data))
+        self.clustering_model = Model(inputs=self.encoder.input,
+                                      outputs=clustering_layer)
+
+        self.clustering_model.get_layer(name=&#39;clustering&#39;).set_weights(
+            [kmeans.cluster_centers_])
+
+        self.clustering_model.compile(
+            optimizer=Adam(self.lr),
+            loss=&#39;kld&#39;
+        )
+        sequence = DECSequence(data, self.clustering_model, self.batch_size)
+
+        early_stopping = EarlyStopping(monitor=&#39;loss&#39;, patience=self.patience)
+        if self.verbose:
+            print(&#39;Clustering optimization&#39;)
+        self.clustering_model.fit_generator(sequence, math.ceil(data.shape[0] / self.batch_size),  epochs=self.epochs, callbacks=[early_stopping],
+                                            verbose=self.verbose)</code></pre>
+</details>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="dimdrop.models.autoencoder.Autoencoder" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder">Autoencoder</a></b></code>:
+<ul class="hlist">
+<li><code><a title="dimdrop.models.autoencoder.Autoencoder.__init__" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder.__init__">__init__</a></code></li>
+<li><code><a title="dimdrop.models.autoencoder.Autoencoder.fit" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder.fit">fit</a></code></li>
+<li><code><a title="dimdrop.models.autoencoder.Autoencoder.fit_transform" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder.fit_transform">fit_transform</a></code></li>
+<li><code><a title="dimdrop.models.autoencoder.Autoencoder.transform" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder.transform">transform</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 <dt id="dimdrop.models.DeepCluster"><code class="flex name class">
 <span>class <span class="ident">DeepCluster</span></span>
 <span>(</span><span><small>ancestors:</small> <a title="dimdrop.models.autoencoder.Autoencoder" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder">Autoencoder</a>)</span>
@@ -454,6 +563,30 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <dd>
 <section class="desc"><p>A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.</p>
 <p>The defaults are set to the parameters explained in a paper of Geoffrey Hinton.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The input dimension</dd>
+<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The output dimension</dd>
+<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code> of <code>int</code>, optional</dt>
+<dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size of the network, default <code>100</code></dd>
+<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The amount of epochs without improvement before the network stops training, default <code>3</code></dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The maximum amount of epochs, default <code>1000</code></dd>
+<dt><strong><code>regularizer</code></strong> :&ensp;<code>keras</code> <code>regularizer</code>, optional</dt>
+<dd>A regularizer to use for the middle layer of the autoencoder.
+<code>None</code> or instance of <a title="dimdrop.regularizers.KMeansRegularizer" href="../regularizers/index.html#dimdrop.regularizers.KMeansRegularizer"><code>KMeansRegularizer</code></a>, <code>dimdrop.regularizers.GMMRegularizer</code>, <a title="dimdrop.regularizers.TSNERegularizer" href="../regularizers/index.html#dimdrop.regularizers.TSNERegularizer"><code>TSNERegularizer</code></a>.</dd>
+<dt><strong><code>pretrain_method</code></strong> :&ensp;<code>string</code>, optional</dt>
+<dd>The pretrain method to use. <code>None</code>, <code>'rbm'</code> or <code>'stacked'</code></dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The verbosity of the network, default <code>0</code></dd>
+</dl>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>model</code></strong> :&ensp; <code>keras</code> <code>model</code></dt>
@@ -513,6 +646,31 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 </code></dt>
 <dd>
 <section class="desc"><p>Implementation of the parametric variant of t-distributed neighborhood embedding.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The input dimension</dd>
+<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The output dimension</dd>
+<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code>, optional</dt>
+<dd>sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: <code>[500, 2000, 2000]</code></dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size of the network, default <code>100</code></dd>
+<dt><strong><code>pretrain</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Whether to perform pretraining using Restricted Boltzmann Machines, default <code>False</code></dd>
+<dt><strong><code>perplexity</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Perplexity parameter in the t-SNE formula, controls how many neighbors are considered in the local neighborhood, default <code>30</code></dd>
+<dt><strong><code>tol</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Tolerance of the perplexity, default <code>1e-5</code></dd>
+<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The amount of epochs without improvement before fitting will stop early, default <code>3</code></dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Maximum amount of epochs, default <code>1000</code></dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Controls the verbosity of the model, default <code>0</code></dd>
+</dl>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>model</code></strong> :&ensp;<code>keras</code> <code>Sequential</code> <code>model</code></dt>
@@ -534,6 +692,31 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
     &#34;&#34;&#34;
     Implementation of the parametric variant of t-distributed neighborhood embedding.
 
+    Parameters
+    ----------
+    in_dim : int
+        The input dimension
+    out_dim : int
+        The output dimension
+    layer_sizes : array, optional
+        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[500, 2000, 2000]`
+    lr : float, optional
+        The learning rate of the network, default `0.01`
+    batch_size : int, optional
+        The batch size of the network, default `100`
+    pretrain : int, optional
+        Whether to perform pretraining using Restricted Boltzmann Machines, default `False`
+    perplexity : int, optional
+        Perplexity parameter in the t-SNE formula, controls how many neighbors are considered in the local neighborhood, default `30`
+    tol : float, optional
+        Tolerance of the perplexity, default `1e-5`
+    patience : int, optional
+        The amount of epochs without improvement before fitting will stop early, default `3`
+    epochs : int, optional
+        Maximum amount of epochs, default `1000`
+    verbose : int, optional
+        Controls the verbosity of the model, default `0`
+
     Attributes
     ----------
     model : keras Sequential model
@@ -551,34 +734,6 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
     &#34;&#34;&#34;
 
     def __init__(self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-5, patience=3, epochs=1000, verbose=0):
-        &#34;&#34;&#34;
-        Initialize Parametric t-SNE object.
-
-        Parameters
-        ----------
-        in_dim : int
-            The input dimension
-        out_dim : int
-            The output dimension
-        layer_sizes : array, optional
-            sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[500, 2000, 2000]`
-        lr : float, optional
-            The learning rate of the network, default `0.01`
-        batch_size : int, optional
-            The batch size of the network, default `100`
-        pretrain : int, optional
-            Whether to perform pretraining using Restricted Boltzmann Machines, default `False`
-        perplexity : int, optional
-            Perplexity parameter in the t-SNE formula, controls how many neighbors are considered in the local neighborhood, default `30`
-        tol : float, optional
-            Tolerance of the perplexity, default `1e-5`
-        patience : int, optional
-            The amount of epochs without improvement before fitting will stop early, default `3`
-        epochs : int, optional
-            Maximum amount of epochs, default `1000`
-        verbose : int, optional
-            Controls the verbosity of the model, default `0`
-        &#34;&#34;&#34;
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.layer_sizes = layer_sizes
@@ -694,63 +849,11 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 <span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-05, patience=3, epochs=1000, verbose=0)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Initialize Parametric t-SNE object.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The input dimension</dd>
-<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The output dimension</dd>
-<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code>, optional</dt>
-<dd>sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: <code>[500, 2000, 2000]</code></dd>
-<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
-<dd>The learning rate of the network, default <code>0.01</code></dd>
-<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The batch size of the network, default <code>100</code></dd>
-<dt><strong><code>pretrain</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>Whether to perform pretraining using Restricted Boltzmann Machines, default <code>False</code></dd>
-<dt><strong><code>perplexity</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>Perplexity parameter in the t-SNE formula, controls how many neighbors are considered in the local neighborhood, default <code>30</code></dd>
-<dt><strong><code>tol</code></strong> :&ensp;<code>float</code>, optional</dt>
-<dd>Tolerance of the perplexity, default <code>1e-5</code></dd>
-<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The amount of epochs without improvement before fitting will stop early, default <code>3</code></dd>
-<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>Maximum amount of epochs, default <code>1000</code></dd>
-<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>Controls the verbosity of the model, default <code>0</code></dd>
-</dl></section>
+<section class="desc"><p>Initialize self.
+See help(type(self)) for accurate signature.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def __init__(self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-5, patience=3, epochs=1000, verbose=0):
-    &#34;&#34;&#34;
-    Initialize Parametric t-SNE object.
-
-    Parameters
-    ----------
-    in_dim : int
-        The input dimension
-    out_dim : int
-        The output dimension
-    layer_sizes : array, optional
-        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[500, 2000, 2000]`
-    lr : float, optional
-        The learning rate of the network, default `0.01`
-    batch_size : int, optional
-        The batch size of the network, default `100`
-    pretrain : int, optional
-        Whether to perform pretraining using Restricted Boltzmann Machines, default `False`
-    perplexity : int, optional
-        Perplexity parameter in the t-SNE formula, controls how many neighbors are considered in the local neighborhood, default `30`
-    tol : float, optional
-        Tolerance of the perplexity, default `1e-5`
-    patience : int, optional
-        The amount of epochs without improvement before fitting will stop early, default `3`
-    epochs : int, optional
-        Maximum amount of epochs, default `1000`
-    verbose : int, optional
-        Controls the verbosity of the model, default `0`
-    &#34;&#34;&#34;
     self.in_dim = in_dim
     self.out_dim = out_dim
     self.layer_sizes = layer_sizes
@@ -879,12 +982,66 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 <section class="desc"><dl>
 <dt><strong><a title="dimdrop.models.VASC" href="#dimdrop.models.VASC"><code>VASC</code></a></strong> :&ensp;<code>variational</code> <a title="dimdrop.models.autoencoder" href="autoencoder.html"><code>dimdrop.models.autoencoder</code></a> <code>for</code> <code>scRNA</code>-<code>seq</code> <code>datasets</code></dt>
 <dd>&nbsp;</dd>
-</dl></section>
+</dl>
+<h2 id="parameters">Parameters:</h2>
+<dl>
+<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The input dimension</dd>
+<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The output dimension</dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Maximum number of epochs, default <code>5000</code></dd>
+<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The amount of epochs without improvement before the network stops training, default <code>3</code></dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size for stochastic optimization, default <code>100</code></dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>var</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether to estimate the variance parameters, default <code>False</code></dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether log-transformation should be performed, default <code>True</code></dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
+</dl>
+<h2 id="attributes">Attributes:</h2>
+<p>TODO</p>
+<h2 id="references">References:</h2>
+<p>TODO</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class VASC:
     &#34;&#34;&#34;
     VASC: variational autoencoder for scRNA-seq datasets
+
+    Parameters:
+    -----------
+    in_dim : int
+        The input dimension
+    out_dim : int
+        The output dimension
+    epochs: int, optional
+        Maximum number of epochs, default `5000`
+    patience: int, optional
+        The amount of epochs without improvement before the network stops training, default `3`
+    batch_size: int, optional
+        The batch size for stochastic optimization, default `100`
+    lr : float, optional
+        The learning rate of the network, default `0.01`
+    var: boolean, optional
+        Whether to estimate the variance parameters, default `False`
+    log: boolean, optional
+        Whether log-transformation should be performed, default `True`
+    scale: boolean, optional
+        Whether scaling (making values within [0,1]) should be performed, default `True`
+
+    Attributes:
+    -----------
+    TODO
+
+    References:
+    -----------
+    TODO
     &#34;&#34;&#34;
 
     def __init__(
@@ -899,28 +1056,6 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
             log=True,
             scale=True,
             verbose=0):
-        &#34;&#34;&#34;
-        Parameters:
-        -----------
-        in_dim : int
-            The input dimension
-        out_dim : int
-            The output dimension
-        epochs: int, optional
-            Maximum number of epochs, default `5000`
-        patience: int, optional
-            The amount of epochs without improvement before the network stops training, default `3`
-        batch_size: int, optional
-            The batch size for stochastic optimization, default `100`
-        lr : float, optional
-            The learning rate of the network, default `0.01`
-        var: boolean, optional
-            Whether to estimate the variance parameters, default `False`
-        log: boolean, optional
-            Whether log-transformation should be performed, default `True`
-        scale: boolean, optional
-            Whether scaling (making values within [0,1]) should be performed, default `True`
-        &#34;&#34;&#34;
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.epochs = epochs
@@ -1072,27 +1207,8 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 <span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=True, scale=True, verbose=0)</span>
 </code></dt>
 <dd>
-<section class="desc"><h2 id="parameters">Parameters:</h2>
-<dl>
-<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The input dimension</dd>
-<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The output dimension</dd>
-<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>Maximum number of epochs, default <code>5000</code></dd>
-<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The amount of epochs without improvement before the network stops training, default <code>3</code></dd>
-<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The batch size for stochastic optimization, default <code>100</code></dd>
-<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
-<dd>The learning rate of the network, default <code>0.01</code></dd>
-<dt><strong><code>var</code></strong> :&ensp;<code>boolean</code>, optional</dt>
-<dd>Whether to estimate the variance parameters, default <code>False</code></dd>
-<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
-<dd>Whether log-transformation should be performed, default <code>True</code></dd>
-<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
-<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
-</dl></section>
+<section class="desc"><p>Initialize self.
+See help(type(self)) for accurate signature.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def __init__(
@@ -1107,28 +1223,6 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
         log=True,
         scale=True,
         verbose=0):
-    &#34;&#34;&#34;
-    Parameters:
-    -----------
-    in_dim : int
-        The input dimension
-    out_dim : int
-        The output dimension
-    epochs: int, optional
-        Maximum number of epochs, default `5000`
-    patience: int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
-    batch_size: int, optional
-        The batch size for stochastic optimization, default `100`
-    lr : float, optional
-        The learning rate of the network, default `0.01`
-    var: boolean, optional
-        Whether to estimate the variance parameters, default `False`
-    log: boolean, optional
-        Whether log-transformation should be performed, default `True`
-    scale: boolean, optional
-        Whether scaling (making values within [0,1]) should be performed, default `True`
-    &#34;&#34;&#34;
     self.in_dim = in_dim
     self.out_dim = out_dim
     self.epochs = epochs
@@ -1265,6 +1359,7 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="dimdrop.models.autoencoder" href="autoencoder.html">dimdrop.models.autoencoder</a></code></li>
+<li><code><a title="dimdrop.models.dec" href="dec.html">dimdrop.models.dec</a></code></li>
 <li><code><a title="dimdrop.models.deepcluster" href="deepcluster.html">dimdrop.models.deepcluster</a></code></li>
 <li><code><a title="dimdrop.models.param_tsne" href="param_tsne.html">dimdrop.models.param_tsne</a></code></li>
 <li><code><a title="dimdrop.models.vasc" href="vasc.html">dimdrop.models.vasc</a></code></li>
@@ -1280,6 +1375,9 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 <li><code><a title="dimdrop.models.Autoencoder.fit_transform" href="#dimdrop.models.Autoencoder.fit_transform">fit_transform</a></code></li>
 <li><code><a title="dimdrop.models.Autoencoder.transform" href="#dimdrop.models.Autoencoder.transform">transform</a></code></li>
 </ul>
+</li>
+<li>
+<h4><code><a title="dimdrop.models.DEC" href="#dimdrop.models.DEC">DEC</a></code></h4>
 </li>
 <li>
 <h4><code><a title="dimdrop.models.DeepCluster" href="#dimdrop.models.DeepCluster">DeepCluster</a></code></h4>
@@ -1308,7 +1406,7 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.5.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.5.3</a>.</p>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad()</script>

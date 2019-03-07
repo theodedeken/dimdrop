@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.5.3" />
-<title>dimdrop.losses API documentation</title>
+<title>dimdrop.util.sequence API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,146 +17,147 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title"><code>dimdrop.losses</code> module</h1>
+<h1 class="title"><code>dimdrop.util.sequence</code> module</h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">from .tsne_loss import TSNELoss
-from .vae_loss import VAELoss
+<pre><code class="python">import math
+from keras.utils import Sequence
 
-__all__ = [
-    &#39;TSNELoss&#39;, &#39;VAELoss&#39;
-]</code></pre>
+
+class DECSequence(Sequence):
+    def __init__(self, data, model, batch_size):
+        self.data = data
+        self.model = model
+        self.batch_size = batch_size
+        self.target = target_distribution(self.model.predict(self.data))
+
+    def __len__(self):
+        return math.ceil(self.data.shape[0] / self.batch_size)
+
+    def __getitem__(self, index):
+        idx = slice(index *
+                    self.batch_size, min((index+1) * self.batch_size, self.target.shape[0]))
+        return (self.data[idx], self.target[idx])
+
+    def on_epoch_end(self):
+        self.target = target_distribution(self.model.predict(self.data))
+
+
+def target_distribution(q):
+    weight = q ** 2 / q.sum(0)
+    return (weight.T / weight.sum(1)).T</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="dimdrop.losses.tsne_loss" href="tsne_loss.html">dimdrop.losses.tsne_loss</a></code></dt>
+<dt id="dimdrop.util.sequence.target_distribution"><code class="name flex">
+<span>def <span class="ident">target_distribution</span></span>(<span>q)</span>
+</code></dt>
 <dd>
 <section class="desc"></section>
-</dd>
-<dt><code class="name"><a title="dimdrop.losses.vae_loss" href="vae_loss.html">dimdrop.losses.vae_loss</a></code></dt>
-<dd>
-<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def target_distribution(q):
+    weight = q ** 2 / q.sum(0)
+    return (weight.T / weight.sum(1)).T</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="dimdrop.losses.TSNELoss"><code class="flex name class">
-<span>class <span class="ident">TSNELoss</span></span>
+<dt id="dimdrop.util.sequence.DECSequence"><code class="flex name class">
+<span>class <span class="ident">DECSequence</span></span>
+<span>(</span><span><small>ancestors:</small> keras.utils.data_utils.Sequence)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Custom keras loss function implementing the cost function of t-SNE</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The dimension of the output of the network</dd>
-<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code></dt>
-<dd>The batch size of the network</dd>
-</dl></section>
+<section class="desc"><p>Base object for fitting to a sequence of data, such as a dataset.</p>
+<p>Every <code>Sequence</code> must implement the <code>__getitem__</code> and the <code>__len__</code> methods.
+If you want to modify your dataset between epochs you may implement
+<code>on_epoch_end</code>. The method <code>__getitem__</code> should return a complete batch.</p>
+<h1 id="notes">Notes</h1>
+<p><code>Sequence</code> are a safer way to do multiprocessing. This structure guarantees
+that the network will only train once on each sample per epoch which is not
+the case with generators.</p>
+<h1 id="examples">Examples</h1>
+<pre><code class="python">    from skimage.io import imread
+    from skimage.transform import resize
+    import numpy as np
+
+    # Here, `x_set` is list of path to the images
+    # and `y_set` are the associated classes.
+
+    class CIFAR10Sequence(Sequence):
+
+        def __init__(self, x_set, y_set, batch_size):
+            self.x, self.y = x_set, y_set
+            self.batch_size = batch_size
+
+        def __len__(self):
+            return int(np.ceil(len(self.x) / float(self.batch_size)))
+
+        def __getitem__(self, idx):
+            batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]
+            batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]
+
+            return np.array([
+                resize(imread(file_name), (200, 200))
+                   for file_name in batch_x]), np.array(batch_y)
+</code></pre></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">class TSNELoss:
-    &#34;&#34;&#34;
-    Custom keras loss function implementing the cost function of t-SNE
-
-    Parameters
-    ----------
-    dim : int
-        The dimension of the output of the network
-    batch_size : int
-        The batch size of the network
-    &#34;&#34;&#34;
-    __name__ = &#39;tsne_loss&#39;
-
-    def __init__(self, dim, batch_size):
-        self.dim = dim
+<pre><code class="python">class DECSequence(Sequence):
+    def __init__(self, data, model, batch_size):
+        self.data = data
+        self.model = model
         self.batch_size = batch_size
+        self.target = target_distribution(self.model.predict(self.data))
 
-    def __call__(self, y_true, y_pred):
-        d = self.dim
-        n = self.batch_size
-        v = d - 1.
+    def __len__(self):
+        return math.ceil(self.data.shape[0] / self.batch_size)
 
-        eps = K.variable(10e-15)
-        sum_act = K.sum(K.square(y_pred), axis=1)
-        Q = K.reshape(sum_act, [-1, 1]) + -2 * \
-            K.dot(y_pred, K.transpose(y_pred))
-        Q = (sum_act + Q) / v
-        Q = K.pow(1 + Q, -(v + 1) / 2)
-        Q *= K.variable(1 - np.eye(n))
-        Q /= K.sum(Q)
-        Q = K.maximum(Q, eps)
-        C = K.log((y_true + eps) / (Q + eps))
-        C = K.sum(y_true * C)
-        return C</code></pre>
+    def __getitem__(self, index):
+        idx = slice(index *
+                    self.batch_size, min((index+1) * self.batch_size, self.target.shape[0]))
+        return (self.data[idx], self.target[idx])
+
+    def on_epoch_end(self):
+        self.target = target_distribution(self.model.predict(self.data))</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="dimdrop.losses.TSNELoss.__init__"><code class="name flex">
-<span>def <span class="ident">__init__</span></span>(<span>self, dim, batch_size)</span>
+<dt id="dimdrop.util.sequence.DECSequence.__init__"><code class="name flex">
+<span>def <span class="ident">__init__</span></span>(<span>self, data, model, batch_size)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Initialize self.
 See help(type(self)) for accurate signature.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def __init__(self, dim, batch_size):
-    self.dim = dim
-    self.batch_size = batch_size</code></pre>
+<pre><code class="python">def __init__(self, data, model, batch_size):
+    self.data = data
+    self.model = model
+    self.batch_size = batch_size
+    self.target = target_distribution(self.model.predict(self.data))</code></pre>
 </details>
 </dd>
-</dl>
-</dd>
-<dt id="dimdrop.losses.VAELoss"><code class="flex name class">
-<span>class <span class="ident">VAELoss</span></span>
+<dt id="dimdrop.util.sequence.DECSequence.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Method called at the end of every epoch.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">class VAELoss:
-    __name__ = &#39;vae_loss&#39;
-
-    def __init__(self, in_dim, z_log_var, z_mean):
-        self.in_dim = in_dim
-        self.z_log_var = z_log_var
-        self.z_mean = z_mean
-
-    def __call__(self, x, x_decoded_mean):
-        xent_loss = self.in_dim * \
-            binary_crossentropy(x, x_decoded_mean)
-        if self.z_log_var:
-            kl_loss = - 0.5 * \
-                K.sum(1 + self.z_log_var - K.square(self.z_mean) -
-                      K.exp(self.z_log_var), axis=-1)
-        else:
-            kl_loss = - 0.5 * \
-                K.sum(1 + 1 - K.square(self.z_mean) - K.exp(1.0), axis=-1)
-        return K.mean(xent_loss + kl_loss)</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="dimdrop.losses.VAELoss.__init__"><code class="name flex">
-<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, z_log_var, z_mean)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Initialize self.
-See help(type(self)) for accurate signature.</p></section>
-<details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def __init__(self, in_dim, z_log_var, z_mean):
-    self.in_dim = in_dim
-    self.z_log_var = z_log_var
-    self.z_mean = z_mean</code></pre>
+<pre><code class="python">def on_epoch_end(self):
+    self.target = target_distribution(self.model.predict(self.data))</code></pre>
 </details>
 </dd>
 </dl>
@@ -172,27 +173,21 @@ See help(type(self)) for accurate signature.</p></section>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="dimdrop" href="../index.html">dimdrop</a></code></li>
+<li><code><a title="dimdrop.util" href="index.html">dimdrop.util</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
-<ul>
-<li><code><a title="dimdrop.losses.tsne_loss" href="tsne_loss.html">dimdrop.losses.tsne_loss</a></code></li>
-<li><code><a title="dimdrop.losses.vae_loss" href="vae_loss.html">dimdrop.losses.vae_loss</a></code></li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="dimdrop.util.sequence.target_distribution" href="#dimdrop.util.sequence.target_distribution">target_distribution</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="dimdrop.losses.TSNELoss" href="#dimdrop.losses.TSNELoss">TSNELoss</a></code></h4>
+<h4><code><a title="dimdrop.util.sequence.DECSequence" href="#dimdrop.util.sequence.DECSequence">DECSequence</a></code></h4>
 <ul class="">
-<li><code><a title="dimdrop.losses.TSNELoss.__init__" href="#dimdrop.losses.TSNELoss.__init__">__init__</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="dimdrop.losses.VAELoss" href="#dimdrop.losses.VAELoss">VAELoss</a></code></h4>
-<ul class="">
-<li><code><a title="dimdrop.losses.VAELoss.__init__" href="#dimdrop.losses.VAELoss.__init__">__init__</a></code></li>
+<li><code><a title="dimdrop.util.sequence.DECSequence.__init__" href="#dimdrop.util.sequence.DECSequence.__init__">__init__</a></code></li>
+<li><code><a title="dimdrop.util.sequence.DECSequence.on_epoch_end" href="#dimdrop.util.sequence.DECSequence.on_epoch_end">on_epoch_end</a></code></li>
 </ul>
 </li>
 </ul>

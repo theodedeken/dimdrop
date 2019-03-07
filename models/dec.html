@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.5.3" />
-<title>dimdrop.models.deepcluster API documentation</title>
+<title>dimdrop.models.dec API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,42 +17,67 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title"><code>dimdrop.models.deepcluster</code> module</h1>
+<h1 class="title"><code>dimdrop.models.dec</code> module</h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import numpy as np
+<pre><code class="python">from keras.optimizers import Adam
+from keras.callbacks import EarlyStopping
+from keras.models import Model
+from sklearn.cluster import KMeans
+import math
 
 from .autoencoder import Autoencoder
-from ..regularizers import KMeansRegularizer
+from ..layers import ClusteringLayer
+from ..util import DECSequence
 
 
-class DeepCluster(Autoencoder):
+class DEC(Autoencoder):
     def __init__(
             self,
             in_dim,
             out_dim,
             k,
-            layer_sizes=[2000, 1000, 500],
-            lr=0.01,
-            batch_size=100,
-            patience=3,
+            layer_sizes=[500, 500, 2000],
             epochs=1000,
-            regularizer=&#39;kmeans&#39;,
-            regularizer_weight=0.5,
-            verbose=0
-    ):
-        if regularizer == &#39;kmeans&#39;:
-            regularizer_obj = KMeansRegularizer(
-                np.random.rand(k, out_dim), weight=regularizer_weight)
-        elif regularizer == &#39;gmm&#39;:
-            # TODO add gmm cluster regularizer
-            regularizer_obj = None
-        else:
-            raise AttributeError
+            lr=0.1,
+            batch_size=256,
+            patience=3,
+            tol=0.01,
+            verbose=0):
         super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
-                         epochs=epochs, regularizer=regularizer_obj, pretrain_method=None, verbose=verbose)</code></pre>
+                         epochs=epochs, regularizer=None, pretrain_method=&#39;stacked&#39;, verbose=verbose)
+        self.k = k
+        self.tol = tol
+
+    def fit(self, data):
+        super().fit(data)
+        clustering_layer = ClusteringLayer(
+            self.k, name=&#39;clustering&#39;)(self.encoder.output)
+
+        if self.verbose:
+            print(&#39;Initializing cluster centers&#39;)
+
+        kmeans = KMeans(n_clusters=self.k, n_init=20)
+        y_pred = kmeans.fit_predict(self.encoder.predict(data))
+        self.clustering_model = Model(inputs=self.encoder.input,
+                                      outputs=clustering_layer)
+
+        self.clustering_model.get_layer(name=&#39;clustering&#39;).set_weights(
+            [kmeans.cluster_centers_])
+
+        self.clustering_model.compile(
+            optimizer=Adam(self.lr),
+            loss=&#39;kld&#39;
+        )
+        sequence = DECSequence(data, self.clustering_model, self.batch_size)
+
+        early_stopping = EarlyStopping(monitor=&#39;loss&#39;, patience=self.patience)
+        if self.verbose:
+            print(&#39;Clustering optimization&#39;)
+        self.clustering_model.fit_generator(sequence, math.ceil(data.shape[0] / self.batch_size),  epochs=self.epochs, callbacks=[early_stopping],
+                                            verbose=self.verbose)</code></pre>
 </details>
 </section>
 <section>
@@ -64,8 +89,8 @@ class DeepCluster(Autoencoder):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="dimdrop.models.deepcluster.DeepCluster"><code class="flex name class">
-<span>class <span class="ident">DeepCluster</span></span>
+<dt id="dimdrop.models.dec.DEC"><code class="flex name class">
+<span>class <span class="ident">DEC</span></span>
 <span>(</span><span><small>ancestors:</small> <a title="dimdrop.models.autoencoder.Autoencoder" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder">Autoencoder</a>)</span>
 </code></dt>
 <dd>
@@ -111,31 +136,51 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 </ul></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">class DeepCluster(Autoencoder):
+<pre><code class="python">class DEC(Autoencoder):
     def __init__(
             self,
             in_dim,
             out_dim,
             k,
-            layer_sizes=[2000, 1000, 500],
-            lr=0.01,
-            batch_size=100,
-            patience=3,
+            layer_sizes=[500, 500, 2000],
             epochs=1000,
-            regularizer=&#39;kmeans&#39;,
-            regularizer_weight=0.5,
-            verbose=0
-    ):
-        if regularizer == &#39;kmeans&#39;:
-            regularizer_obj = KMeansRegularizer(
-                np.random.rand(k, out_dim), weight=regularizer_weight)
-        elif regularizer == &#39;gmm&#39;:
-            # TODO add gmm cluster regularizer
-            regularizer_obj = None
-        else:
-            raise AttributeError
+            lr=0.1,
+            batch_size=256,
+            patience=3,
+            tol=0.01,
+            verbose=0):
         super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
-                         epochs=epochs, regularizer=regularizer_obj, pretrain_method=None, verbose=verbose)</code></pre>
+                         epochs=epochs, regularizer=None, pretrain_method=&#39;stacked&#39;, verbose=verbose)
+        self.k = k
+        self.tol = tol
+
+    def fit(self, data):
+        super().fit(data)
+        clustering_layer = ClusteringLayer(
+            self.k, name=&#39;clustering&#39;)(self.encoder.output)
+
+        if self.verbose:
+            print(&#39;Initializing cluster centers&#39;)
+
+        kmeans = KMeans(n_clusters=self.k, n_init=20)
+        y_pred = kmeans.fit_predict(self.encoder.predict(data))
+        self.clustering_model = Model(inputs=self.encoder.input,
+                                      outputs=clustering_layer)
+
+        self.clustering_model.get_layer(name=&#39;clustering&#39;).set_weights(
+            [kmeans.cluster_centers_])
+
+        self.clustering_model.compile(
+            optimizer=Adam(self.lr),
+            loss=&#39;kld&#39;
+        )
+        sequence = DECSequence(data, self.clustering_model, self.batch_size)
+
+        early_stopping = EarlyStopping(monitor=&#39;loss&#39;, patience=self.patience)
+        if self.verbose:
+            print(&#39;Clustering optimization&#39;)
+        self.clustering_model.fit_generator(sequence, math.ceil(data.shape[0] / self.batch_size),  epochs=self.epochs, callbacks=[early_stopping],
+                                            verbose=self.verbose)</code></pre>
 </details>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -166,7 +211,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="dimdrop.models.deepcluster.DeepCluster" href="#dimdrop.models.deepcluster.DeepCluster">DeepCluster</a></code></h4>
+<h4><code><a title="dimdrop.models.dec.DEC" href="#dimdrop.models.dec.DEC">DEC</a></code></h4>
 </li>
 </ul>
 </li>
