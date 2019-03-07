@@ -7,7 +7,7 @@ install:
   - pip3 install -e .
   - pip3 install pdoc3
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
-script: pdoc3 --html dimdrop
+script: pdoc3 --html dimdrop --overwrite
 deploy:
   provider: pages
   local-dir: html/dimdrop
