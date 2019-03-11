@@ -81,6 +81,10 @@ __all__ = [
 <dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
 <dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether log-transformation should be performed, default <code>False</code></dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The batch size of the network, default <code>100</code></dd>
 <dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -103,6 +107,8 @@ __all__ = [
 <dd>The encoder model</dd>
 <dt><strong><code>layers</code></strong> :&ensp;<code>array</code> of <code>keras</code> <code>layers</code></dt>
 <dd>The layers of the network</dd>
+<dt><strong><code>data_transform</code></strong> :&ensp;<code>Transform</code> <code>object</code></dt>
+<dd>The transformation to apply on the data before using it</dd>
 </dl>
 <h2 id="references">References</h2>
 <ul>
@@ -127,6 +133,10 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
     lr : float, optional 
         The learning rate of the network, default `0.01`
+    log : boolean, optional
+        Whether log-transformation should be performed, default `False`
+    scale : boolean, optional
+        Whether scaling (making values within [0,1]) should be performed, default `True`
     batch_size : int, optional
         The batch size of the network, default `100`
     patience : int, optional
@@ -149,6 +159,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         The encoder model
     layers : array of keras layers
         The layers of the network
+    data_transform : Transform object
+        The transformation to apply on the data before using it
 
     References
     ----------
@@ -162,6 +174,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         out_dim,
         layer_sizes=[2000, 1000, 500],
         lr=0.01,
+        scale=True,
+        log=False,
         batch_size=100,
         patience=3,
         epochs=1000,
@@ -173,6 +187,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         self.out_dim = out_dim
         self.layer_sizes = layer_sizes
         self.lr = lr
+        self.data_transform = Transform(scale, log)
         self.batch_size = batch_size
         self.patience = patience
         self.epochs = epochs
@@ -260,6 +275,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         data : array
             Array of training samples where each sample is of size `in_dim`
         &#34;&#34;&#34;
+        data = self.data_transform(data)
+
         if self.pretrain_method:
             self.__pretrainers[self.pretrain_method](data)
 
@@ -285,6 +302,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         array
             Transformed samples, where each sample is of size `out_dim`
         &#34;&#34;&#34;
+        data = self.data_transform(data)
         return self.encoder.predict(data, verbose=self.verbose)
 
     def fit_transform(self, data):
@@ -312,7 +330,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <h3>Methods</h3>
 <dl>
 <dt id="dimdrop.models.Autoencoder.__init__"><code class="name flex">
-<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, layer_sizes=[2000, 1000, 500], lr=0.01, batch_size=100, patience=3, epochs=1000, regularizer=None, pretrain_method=&#39;rbm&#39;, verbose=0)</span>
+<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, layer_sizes=[2000, 1000, 500], lr=0.01, scale=True, log=False, batch_size=100, patience=3, epochs=1000, regularizer=None, pretrain_method=&#39;rbm&#39;, verbose=0)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Initialize self.
@@ -325,6 +343,8 @@ See help(type(self)) for accurate signature.</p></section>
     out_dim,
     layer_sizes=[2000, 1000, 500],
     lr=0.01,
+    scale=True,
+    log=False,
     batch_size=100,
     patience=3,
     epochs=1000,
@@ -336,6 +356,7 @@ See help(type(self)) for accurate signature.</p></section>
     self.out_dim = out_dim
     self.layer_sizes = layer_sizes
     self.lr = lr
+    self.data_transform = Transform(scale, log)
     self.batch_size = batch_size
     self.patience = patience
     self.epochs = epochs
@@ -368,6 +389,8 @@ See help(type(self)) for accurate signature.</p></section>
     data : array
         Array of training samples where each sample is of size `in_dim`
     &#34;&#34;&#34;
+    data = self.data_transform(data)
+
     if self.pretrain_method:
         self.__pretrainers[self.pretrain_method](data)
 
@@ -446,6 +469,7 @@ See help(type(self)) for accurate signature.</p></section>
     array
         Transformed samples, where each sample is of size `out_dim`
     &#34;&#34;&#34;
+    data = self.data_transform(data)
     return self.encoder.predict(data, verbose=self.verbose)</code></pre>
 </details>
 </dd>
@@ -468,6 +492,10 @@ See help(type(self)) for accurate signature.</p></section>
 <dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
 <dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether log-transformation should be performed, default <code>False</code></dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The batch size of the network, default <code>100</code></dd>
 <dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -490,6 +518,8 @@ See help(type(self)) for accurate signature.</p></section>
 <dd>The encoder model</dd>
 <dt><strong><code>layers</code></strong> :&ensp;<code>array</code> of <code>keras</code> <code>layers</code></dt>
 <dd>The layers of the network</dd>
+<dt><strong><code>data_transform</code></strong> :&ensp;<code>Transform</code> <code>object</code></dt>
+<dd>The transformation to apply on the data before using it</dd>
 </dl>
 <h2 id="references">References</h2>
 <ul>
@@ -507,17 +537,20 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
             layer_sizes=[500, 500, 2000],
             epochs=1000,
             lr=0.1,
+            scale=True,
+            log=False,
             batch_size=256,
             patience=3,
             tol=0.01,
             verbose=0):
-        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
+        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, scale=scale, log=log, batch_size=batch_size, patience=patience,
                          epochs=epochs, regularizer=None, pretrain_method=&#39;stacked&#39;, verbose=verbose)
         self.k = k
         self.tol = tol
 
     def fit(self, data):
         super().fit(data)
+        data = self.transform(data)
         clustering_layer = ClusteringLayer(
             self.k, name=&#39;clustering&#39;)(self.encoder.output)
 
@@ -573,6 +606,10 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
 <dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether log-transformation should be performed, default <code>False</code></dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The batch size of the network, default <code>100</code></dd>
 <dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -595,6 +632,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <dd>The encoder model</dd>
 <dt><strong><code>layers</code></strong> :&ensp;<code>array</code> of <code>keras</code> <code>layers</code></dt>
 <dd>The layers of the network</dd>
+<dt><strong><code>data_transform</code></strong> :&ensp;<code>Transform</code> <code>object</code></dt>
+<dd>The transformation to apply on the data before using it</dd>
 </dl>
 <h2 id="references">References</h2>
 <ul>
@@ -611,6 +650,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
             k,
             layer_sizes=[2000, 1000, 500],
             lr=0.01,
+            scale=True,
+            log=False,
             batch_size=100,
             patience=3,
             epochs=1000,
@@ -626,7 +667,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
             regularizer_obj = None
         else:
             raise AttributeError
-        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
+        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, scale=scale, log=log, batch_size=batch_size, patience=patience,
                          epochs=epochs, regularizer=regularizer_obj, pretrain_method=None, verbose=verbose)</code></pre>
 </details>
 <h3>Inherited members</h3>
@@ -656,6 +697,10 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <dd>sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: <code>[500, 2000, 2000]</code></dd>
 <dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether log-transformation should be performed, default <code>False</code></dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The batch size of the network, default <code>100</code></dd>
 <dt><strong><code>pretrain</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -677,6 +722,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <dd>The neural network</dd>
 <dt><strong><code>layers</code></strong> :&ensp;<code>keras</code> <code>layers</code></dt>
 <dd>The layers of the neural network</dd>
+<dt><strong><code>data_transform</code></strong> :&ensp;<code>Transform</code> <code>object</code></dt>
+<dd>The transformation to apply on data before using it</dd>
 </dl>
 <h2 id="references">References</h2>
 <ul>
@@ -702,6 +749,10 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
         sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[500, 2000, 2000]`
     lr : float, optional
         The learning rate of the network, default `0.01`
+    log : boolean, optional
+        Whether log-transformation should be performed, default `False`
+    scale : boolean, optional
+        Whether scaling (making values within [0,1]) should be performed, default `True`
     batch_size : int, optional
         The batch size of the network, default `100`
     pretrain : int, optional
@@ -723,6 +774,8 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
         The neural network
     layers : keras layers
         The layers of the neural network
+    data_transform : Transform object
+        The transformation to apply on data before using it
 
     References
     ----------
@@ -733,11 +786,26 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
         Beach, Florida USA, 16–18 Apr 2009. PMLR.
     &#34;&#34;&#34;
 
-    def __init__(self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-5, patience=3, epochs=1000, verbose=0):
+    def __init__(
+            self,
+            in_dim,
+            out_dim,
+            layer_sizes=[500, 500, 2000],
+            lr=0.01,
+            log=False,
+            scale=True,
+            batch_size=100,
+            pretrain=False,
+            perplexity=30,
+            tol=1e-5,
+            patience=3,
+            epochs=1000,
+            verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.layer_sizes = layer_sizes
         self.lr = lr
+        self.data_transform = Transform(scale, log)
         self.batch_size = batch_size
         self.pretrain = pretrain
         self.perplexity = perplexity
@@ -796,6 +864,8 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
         data : array
             Array of training samples where each sample is of size `in_dim`
         &#34;&#34;&#34;
+        data = self.data_transform(data)
+
         if self.pretrain:
             if self.verbose:
                 print(&#39;Pretraining network&#39;)
@@ -824,6 +894,7 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
         array
             Transformed samples, where each sample is of size `out_dim`
         &#34;&#34;&#34;
+        data = self.data_transform(data)
         return self.model.predict(data, verbose=self.verbose)
 
     def fit_transform(self, data):
@@ -846,18 +917,33 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 <h3>Methods</h3>
 <dl>
 <dt id="dimdrop.models.ParametricTSNE.__init__"><code class="name flex">
-<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-05, patience=3, epochs=1000, verbose=0)</span>
+<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, log=False, scale=True, batch_size=100, pretrain=False, perplexity=30, tol=1e-05, patience=3, epochs=1000, verbose=0)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Initialize self.
 See help(type(self)) for accurate signature.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def __init__(self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-5, patience=3, epochs=1000, verbose=0):
+<pre><code class="python">def __init__(
+        self,
+        in_dim,
+        out_dim,
+        layer_sizes=[500, 500, 2000],
+        lr=0.01,
+        log=False,
+        scale=True,
+        batch_size=100,
+        pretrain=False,
+        perplexity=30,
+        tol=1e-5,
+        patience=3,
+        epochs=1000,
+        verbose=0):
     self.in_dim = in_dim
     self.out_dim = out_dim
     self.layer_sizes = layer_sizes
     self.lr = lr
+    self.data_transform = Transform(scale, log)
     self.batch_size = batch_size
     self.pretrain = pretrain
     self.perplexity = perplexity
@@ -889,6 +975,8 @@ See help(type(self)) for accurate signature.</p></section>
     data : array
         Array of training samples where each sample is of size `in_dim`
     &#34;&#34;&#34;
+    data = self.data_transform(data)
+
     if self.pretrain:
         if self.verbose:
             print(&#39;Pretraining network&#39;)
@@ -970,6 +1058,7 @@ See help(type(self)) for accurate signature.</p></section>
     array
         Transformed samples, where each sample is of size `out_dim`
     &#34;&#34;&#34;
+    data = self.data_transform(data)
     return self.model.predict(data, verbose=self.verbose)</code></pre>
 </details>
 </dd>
@@ -1000,7 +1089,7 @@ See help(type(self)) for accurate signature.</p></section>
 <dt><strong><code>var</code></strong> :&ensp;<code>boolean</code>, optional</dt>
 <dd>Whether to estimate the variance parameters, default <code>False</code></dd>
 <dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
-<dd>Whether log-transformation should be performed, default <code>True</code></dd>
+<dd>Whether log-transformation should be performed, default <code>False</code></dd>
 <dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
 <dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
 </dl>
@@ -1031,7 +1120,7 @@ See help(type(self)) for accurate signature.</p></section>
     var: boolean, optional
         Whether to estimate the variance parameters, default `False`
     log: boolean, optional
-        Whether log-transformation should be performed, default `True`
+        Whether log-transformation should be performed, default `False`
     scale: boolean, optional
         Whether scaling (making values within [0,1]) should be performed, default `True`
 
@@ -1053,7 +1142,7 @@ See help(type(self)) for accurate signature.</p></section>
             batch_size=100,
             lr=0.01,
             var=False,
-            log=True,
+            log=False,
             scale=True,
             verbose=0):
         self.in_dim = in_dim
@@ -1063,8 +1152,7 @@ See help(type(self)) for accurate signature.</p></section>
         self.batch_size = batch_size
         self.lr = lr
         self.var = var
-        self.log = log
-        self.scale = scale
+        self.data_transform = Transform(scale, log)
         self.verbose = verbose
         self.__init_network()
 
@@ -1155,11 +1243,7 @@ See help(type(self)) for accurate signature.</p></section>
         data : array
             Array of training samples where each sample is of size `in_dim`
         &#34;&#34;&#34;
-        if self.log:
-            data = np.log2(data + 1)
-        if self.scale:
-            for i in range(data.shape[0]):
-                data[i, :] = data[i, :] / np.max(data[i, :])
+        data = self.data_transform(data)
 
         tau_in = np.ones(data.shape, dtype=&#39;float32&#39;)
 
@@ -1199,12 +1283,13 @@ See help(type(self)) for accurate signature.</p></section>
         array
             Transformed samples, where each sample is of size `out_dim`
         &#34;&#34;&#34;
+        data = self.data_transform(data)
         return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="dimdrop.models.VASC.__init__"><code class="name flex">
-<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=True, scale=True, verbose=0)</span>
+<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=False, scale=True, verbose=0)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Initialize self.
@@ -1220,7 +1305,7 @@ See help(type(self)) for accurate signature.</p></section>
         batch_size=100,
         lr=0.01,
         var=False,
-        log=True,
+        log=False,
         scale=True,
         verbose=0):
     self.in_dim = in_dim
@@ -1230,8 +1315,7 @@ See help(type(self)) for accurate signature.</p></section>
     self.batch_size = batch_size
     self.lr = lr
     self.var = var
-    self.log = log
-    self.scale = scale
+    self.data_transform = Transform(scale, log)
     self.verbose = verbose
     self.__init_network()</code></pre>
 </details>
@@ -1257,11 +1341,7 @@ See help(type(self)) for accurate signature.</p></section>
     data : array
         Array of training samples where each sample is of size `in_dim`
     &#34;&#34;&#34;
-    if self.log:
-        data = np.log2(data + 1)
-    if self.scale:
-        for i in range(data.shape[0]):
-            data[i, :] = data[i, :] / np.max(data[i, :])
+    data = self.data_transform(data)
 
     tau_in = np.ones(data.shape, dtype=&#39;float32&#39;)
 
@@ -1337,6 +1417,7 @@ See help(type(self)) for accurate signature.</p></section>
     array
         Transformed samples, where each sample is of size `out_dim`
     &#34;&#34;&#34;
+    data = self.data_transform(data)
     return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]</code></pre>
 </details>
 </dd>

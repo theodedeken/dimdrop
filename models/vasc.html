@@ -41,6 +41,7 @@ from keras.layers.merge import concatenate, multiply
 from keras.layers import Input, Dense, Activation, Lambda, RepeatVector, Reshape, Layer, Dropout, BatchNormalization, Permute
 from keras.callbacks import EarlyStopping
 from ..losses import VAELoss
+from ..util import Transform
 
 
 class VASC:
@@ -64,7 +65,7 @@ class VASC:
     var: boolean, optional
         Whether to estimate the variance parameters, default `False`
     log: boolean, optional
-        Whether log-transformation should be performed, default `True`
+        Whether log-transformation should be performed, default `False`
     scale: boolean, optional
         Whether scaling (making values within [0,1]) should be performed, default `True`
 
@@ -86,7 +87,7 @@ class VASC:
             batch_size=100,
             lr=0.01,
             var=False,
-            log=True,
+            log=False,
             scale=True,
             verbose=0):
         self.in_dim = in_dim
@@ -96,8 +97,7 @@ class VASC:
         self.batch_size = batch_size
         self.lr = lr
         self.var = var
-        self.log = log
-        self.scale = scale
+        self.data_transform = Transform(scale, log)
         self.verbose = verbose
         self.__init_network()
 
@@ -188,11 +188,7 @@ class VASC:
         data : array
             Array of training samples where each sample is of size `in_dim`
         &#34;&#34;&#34;
-        if self.log:
-            data = np.log2(data + 1)
-        if self.scale:
-            for i in range(data.shape[0]):
-                data[i, :] = data[i, :] / np.max(data[i, :])
+        data = self.data_transform(data)
 
         tau_in = np.ones(data.shape, dtype=&#39;float32&#39;)
 
@@ -232,6 +228,7 @@ class VASC:
         array
             Transformed samples, where each sample is of size `out_dim`
         &#34;&#34;&#34;
+        data = self.data_transform(data)
         return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]
 
 
@@ -366,7 +363,7 @@ def gumbel_softmax(args):
 <dt><strong><code>var</code></strong> :&ensp;<code>boolean</code>, optional</dt>
 <dd>Whether to estimate the variance parameters, default <code>False</code></dd>
 <dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
-<dd>Whether log-transformation should be performed, default <code>True</code></dd>
+<dd>Whether log-transformation should be performed, default <code>False</code></dd>
 <dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
 <dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
 </dl>
@@ -397,7 +394,7 @@ def gumbel_softmax(args):
     var: boolean, optional
         Whether to estimate the variance parameters, default `False`
     log: boolean, optional
-        Whether log-transformation should be performed, default `True`
+        Whether log-transformation should be performed, default `False`
     scale: boolean, optional
         Whether scaling (making values within [0,1]) should be performed, default `True`
 
@@ -419,7 +416,7 @@ def gumbel_softmax(args):
             batch_size=100,
             lr=0.01,
             var=False,
-            log=True,
+            log=False,
             scale=True,
             verbose=0):
         self.in_dim = in_dim
@@ -429,8 +426,7 @@ def gumbel_softmax(args):
         self.batch_size = batch_size
         self.lr = lr
         self.var = var
-        self.log = log
-        self.scale = scale
+        self.data_transform = Transform(scale, log)
         self.verbose = verbose
         self.__init_network()
 
@@ -521,11 +517,7 @@ def gumbel_softmax(args):
         data : array
             Array of training samples where each sample is of size `in_dim`
         &#34;&#34;&#34;
-        if self.log:
-            data = np.log2(data + 1)
-        if self.scale:
-            for i in range(data.shape[0]):
-                data[i, :] = data[i, :] / np.max(data[i, :])
+        data = self.data_transform(data)
 
         tau_in = np.ones(data.shape, dtype=&#39;float32&#39;)
 
@@ -565,12 +557,13 @@ def gumbel_softmax(args):
         array
             Transformed samples, where each sample is of size `out_dim`
         &#34;&#34;&#34;
+        data = self.data_transform(data)
         return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="dimdrop.models.vasc.VASC.__init__"><code class="name flex">
-<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=True, scale=True, verbose=0)</span>
+<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=False, scale=True, verbose=0)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Initialize self.
@@ -586,7 +579,7 @@ See help(type(self)) for accurate signature.</p></section>
         batch_size=100,
         lr=0.01,
         var=False,
-        log=True,
+        log=False,
         scale=True,
         verbose=0):
     self.in_dim = in_dim
@@ -596,8 +589,7 @@ See help(type(self)) for accurate signature.</p></section>
     self.batch_size = batch_size
     self.lr = lr
     self.var = var
-    self.log = log
-    self.scale = scale
+    self.data_transform = Transform(scale, log)
     self.verbose = verbose
     self.__init_network()</code></pre>
 </details>
@@ -623,11 +615,7 @@ See help(type(self)) for accurate signature.</p></section>
     data : array
         Array of training samples where each sample is of size `in_dim`
     &#34;&#34;&#34;
-    if self.log:
-        data = np.log2(data + 1)
-    if self.scale:
-        for i in range(data.shape[0]):
-            data[i, :] = data[i, :] / np.max(data[i, :])
+    data = self.data_transform(data)
 
     tau_in = np.ones(data.shape, dtype=&#39;float32&#39;)
 
@@ -703,6 +691,7 @@ See help(type(self)) for accurate signature.</p></section>
     array
         Transformed samples, where each sample is of size `out_dim`
     &#34;&#34;&#34;
+    data = self.data_transform(data)
     return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]</code></pre>
 </details>
 </dd>

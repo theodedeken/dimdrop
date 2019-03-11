@@ -42,17 +42,20 @@ class DEC(Autoencoder):
             layer_sizes=[500, 500, 2000],
             epochs=1000,
             lr=0.1,
+            scale=True,
+            log=False,
             batch_size=256,
             patience=3,
             tol=0.01,
             verbose=0):
-        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
+        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, scale=scale, log=log, batch_size=batch_size, patience=patience,
                          epochs=epochs, regularizer=None, pretrain_method=&#39;stacked&#39;, verbose=verbose)
         self.k = k
         self.tol = tol
 
     def fit(self, data):
         super().fit(data)
+        data = self.transform(data)
         clustering_layer = ClusteringLayer(
             self.k, name=&#39;clustering&#39;)(self.encoder.output)
 
@@ -106,6 +109,10 @@ class DEC(Autoencoder):
 <dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
 <dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether log-transformation should be performed, default <code>False</code></dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The batch size of the network, default <code>100</code></dd>
 <dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -128,6 +135,8 @@ class DEC(Autoencoder):
 <dd>The encoder model</dd>
 <dt><strong><code>layers</code></strong> :&ensp;<code>array</code> of <code>keras</code> <code>layers</code></dt>
 <dd>The layers of the network</dd>
+<dt><strong><code>data_transform</code></strong> :&ensp;<code>Transform</code> <code>object</code></dt>
+<dd>The transformation to apply on the data before using it</dd>
 </dl>
 <h2 id="references">References</h2>
 <ul>
@@ -145,17 +154,20 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
             layer_sizes=[500, 500, 2000],
             epochs=1000,
             lr=0.1,
+            scale=True,
+            log=False,
             batch_size=256,
             patience=3,
             tol=0.01,
             verbose=0):
-        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
+        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, scale=scale, log=log, batch_size=batch_size, patience=patience,
                          epochs=epochs, regularizer=None, pretrain_method=&#39;stacked&#39;, verbose=verbose)
         self.k = k
         self.tol = tol
 
     def fit(self, data):
         super().fit(data)
+        data = self.transform(data)
         clustering_layer = ClusteringLayer(
             self.k, name=&#39;clustering&#39;)(self.encoder.output)
 

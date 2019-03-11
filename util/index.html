@@ -24,9 +24,10 @@
 <summary>Source code</summary>
 <pre><code class="python">from .rbm import EarlyStoppingRBM
 from .sequence import DECSequence
+from .transform import Transform
 
 __all__ = [
-    &#39;EarlyStoppingRBM&#39;, &#39;DECSequence&#39;
+    &#39;EarlyStoppingRBM&#39;, &#39;DECSequence&#39;, &#39;Transform&#39;
 ]</code></pre>
 </details>
 </section>
@@ -38,6 +39,10 @@ __all__ = [
 <section class="desc"></section>
 </dd>
 <dt><code class="name"><a title="dimdrop.util.sequence" href="sequence.html">dimdrop.util.sequence</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="dimdrop.util.transform" href="transform.html">dimdrop.util.transform</a></code></dt>
 <dd>
 <section class="desc"></section>
 </dd>
@@ -288,6 +293,43 @@ See help(type(self)) for accurate signature.</p></section>
 </dd>
 </dl>
 </dd>
+<dt id="dimdrop.util.Transform"><code class="flex name class">
+<span>class <span class="ident">Transform</span></span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class Transform:
+    def __init__(self, scale=True, log=False):
+        self.scale = scale
+        self.log = log
+
+    def __call__(self, data):
+        if self.log:
+            data = np.log2(data + 1)
+        if self.scale:
+            for i in range(data.shape[0]):
+                data[i, :] = data[i, :] / np.max(data[i, :])
+        return data</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="dimdrop.util.Transform.__init__"><code class="name flex">
+<span>def <span class="ident">__init__</span></span>(<span>self, scale=True, log=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Initialize self.
+See help(type(self)) for accurate signature.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def __init__(self, scale=True, log=False):
+    self.scale = scale
+    self.log = log</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -306,6 +348,7 @@ See help(type(self)) for accurate signature.</p></section>
 <ul>
 <li><code><a title="dimdrop.util.rbm" href="rbm.html">dimdrop.util.rbm</a></code></li>
 <li><code><a title="dimdrop.util.sequence" href="sequence.html">dimdrop.util.sequence</a></code></li>
+<li><code><a title="dimdrop.util.transform" href="transform.html">dimdrop.util.transform</a></code></li>
 <li><code><a title="dimdrop.util.tsne" href="tsne.html">dimdrop.util.tsne</a></code></li>
 </ul>
 </li>
@@ -323,6 +366,12 @@ See help(type(self)) for accurate signature.</p></section>
 <ul class="">
 <li><code><a title="dimdrop.util.EarlyStoppingRBM.__init__" href="#dimdrop.util.EarlyStoppingRBM.__init__">__init__</a></code></li>
 <li><code><a title="dimdrop.util.EarlyStoppingRBM.fit" href="#dimdrop.util.EarlyStoppingRBM.fit">fit</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="dimdrop.util.Transform" href="#dimdrop.util.Transform">Transform</a></code></h4>
+<ul class="">
+<li><code><a title="dimdrop.util.Transform.__init__" href="#dimdrop.util.Transform.__init__">__init__</a></code></li>
 </ul>
 </li>
 </ul>
