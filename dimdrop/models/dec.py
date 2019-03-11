@@ -31,7 +31,7 @@ class DEC(Autoencoder):
 
     def fit(self, data):
         super().fit(data)
-        data = self.transform(data)
+        data = self.data_transform(data)
         clustering_layer = ClusteringLayer(
             self.k, name='clustering')(self.encoder.output)
 

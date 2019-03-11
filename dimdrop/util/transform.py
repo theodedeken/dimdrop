@@ -7,9 +7,12 @@ class Transform:
         self.log = log
 
     def __call__(self, data):
+        if not self.scale and not self.log:
+            return data
         if self.log:
-            data = np.log2(data + 1)
+            output = np.log2(data + 1)
         if self.scale:
+            output = np.zeros(data.shape, dtype=np.float32)
             for i in range(data.shape[0]):
-                data[i, :] = data[i, :] / np.max(data[i, :])
-        return data
+                output[i, :] = data[i, :] / np.max(data[i, :])
+        return output
