@@ -7,6 +7,7 @@ import numpy as np
 
 from ..losses import TSNELoss
 from ..util.tsne import compute_joint_probabilities
+from ..util import Transform
 
 
 class ParametricTSNE:
@@ -23,6 +24,10 @@ class ParametricTSNE:
         sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[500, 2000, 2000]`
     lr : float, optional
         The learning rate of the network, default `0.01`
+    log : boolean, optional
+        Whether log-transformation should be performed, default `False`
+    scale : boolean, optional
+        Whether scaling (making values within [0,1]) should be performed, default `True`
     batch_size : int, optional
         The batch size of the network, default `100`
     pretrain : int, optional
@@ -44,6 +49,8 @@ class ParametricTSNE:
         The neural network
     layers : keras layers
         The layers of the neural network
+    data_transform : Transform object
+        The transformation to apply on data before using it
 
     References
     ----------
@@ -54,11 +61,26 @@ class ParametricTSNE:
         Beach, Florida USA, 16–18 Apr 2009. PMLR.
     """
 
-    def __init__(self, in_dim, out_dim, layer_sizes=[500, 500, 2000], lr=0.01, batch_size=100, pretrain=False, perplexity=30, tol=1e-5, patience=3, epochs=1000, verbose=0):
+    def __init__(
+            self,
+            in_dim,
+            out_dim,
+            layer_sizes=[500, 500, 2000],
+            lr=0.01,
+            log=False,
+            scale=True,
+            batch_size=100,
+            pretrain=False,
+            perplexity=30,
+            tol=1e-5,
+            patience=3,
+            epochs=1000,
+            verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.layer_sizes = layer_sizes
         self.lr = lr
+        self.data_transform = Transform(scale, log)
         self.batch_size = batch_size
         self.pretrain = pretrain
         self.perplexity = perplexity
@@ -117,6 +139,8 @@ class ParametricTSNE:
         data : array
             Array of training samples where each sample is of size `in_dim`
         """
+        data = self.data_transform(data)
+
         if self.pretrain:
             if self.verbose:
                 print('Pretraining network')
@@ -145,6 +169,7 @@ class ParametricTSNE:
         array
             Transformed samples, where each sample is of size `out_dim`
         """
+        data = self.data_transform(data)
         return self.model.predict(data, verbose=self.verbose)
 
     def fit_transform(self, data):

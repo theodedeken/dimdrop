@@ -16,6 +16,7 @@ from keras.layers.merge import concatenate, multiply
 from keras.layers import Input, Dense, Activation, Lambda, RepeatVector, Reshape, Layer, Dropout, BatchNormalization, Permute
 from keras.callbacks import EarlyStopping
 from ..losses import VAELoss
+from ..util import Transform
 
 
 class VASC:
@@ -39,7 +40,7 @@ class VASC:
     var: boolean, optional
         Whether to estimate the variance parameters, default `False`
     log: boolean, optional
-        Whether log-transformation should be performed, default `True`
+        Whether log-transformation should be performed, default `False`
     scale: boolean, optional
         Whether scaling (making values within [0,1]) should be performed, default `True`
 
@@ -61,7 +62,7 @@ class VASC:
             batch_size=100,
             lr=0.01,
             var=False,
-            log=True,
+            log=False,
             scale=True,
             verbose=0):
         self.in_dim = in_dim
@@ -71,8 +72,7 @@ class VASC:
         self.batch_size = batch_size
         self.lr = lr
         self.var = var
-        self.log = log
-        self.scale = scale
+        self.data_transform = Transform(scale, log)
         self.verbose = verbose
         self.__init_network()
 
@@ -163,11 +163,7 @@ class VASC:
         data : array
             Array of training samples where each sample is of size `in_dim`
         """
-        if self.log:
-            data = np.log2(data + 1)
-        if self.scale:
-            for i in range(data.shape[0]):
-                data[i, :] = data[i, :] / np.max(data[i, :])
+        data = self.data_transform(data)
 
         tau_in = np.ones(data.shape, dtype='float32')
 
@@ -207,6 +203,7 @@ class VASC:
         array
             Transformed samples, where each sample is of size `out_dim`
         """
+        data = self.data_transform(data)
         return self.ae.predict([data, np.ones(data.shape, dtype='float32')])[5]
 
 

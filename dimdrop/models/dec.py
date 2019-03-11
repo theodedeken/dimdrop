@@ -18,17 +18,20 @@ class DEC(Autoencoder):
             layer_sizes=[500, 500, 2000],
             epochs=1000,
             lr=0.1,
+            scale=True,
+            log=False,
             batch_size=256,
             patience=3,
             tol=0.01,
             verbose=0):
-        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
+        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, scale=scale, log=log, batch_size=batch_size, patience=patience,
                          epochs=epochs, regularizer=None, pretrain_method='stacked', verbose=verbose)
         self.k = k
         self.tol = tol
 
     def fit(self, data):
         super().fit(data)
+        data = self.transform(data)
         clustering_layer = ClusteringLayer(
             self.k, name='clustering')(self.encoder.output)
 

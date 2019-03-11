@@ -12,6 +12,8 @@ class DeepCluster(Autoencoder):
             k,
             layer_sizes=[2000, 1000, 500],
             lr=0.01,
+            scale=True,
+            log=False,
             batch_size=100,
             patience=3,
             epochs=1000,
@@ -27,5 +29,5 @@ class DeepCluster(Autoencoder):
             regularizer_obj = None
         else:
             raise AttributeError
-        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, batch_size=batch_size, patience=patience,
+        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, scale=scale, log=log, batch_size=batch_size, patience=patience,
                          epochs=epochs, regularizer=regularizer_obj, pretrain_method=None, verbose=verbose)

@@ -5,6 +5,8 @@ from keras.callbacks import EarlyStopping
 from sklearn.neural_network import BernoulliRBM
 import numpy as np
 
+from ..util import Transform
+
 
 class Autoencoder:
     """
@@ -22,6 +24,10 @@ class Autoencoder:
         The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
     lr : float, optional 
         The learning rate of the network, default `0.01`
+    log : boolean, optional
+        Whether log-transformation should be performed, default `False`
+    scale : boolean, optional
+        Whether scaling (making values within [0,1]) should be performed, default `True`
     batch_size : int, optional
         The batch size of the network, default `100`
     patience : int, optional
@@ -44,6 +50,8 @@ class Autoencoder:
         The encoder model
     layers : array of keras layers
         The layers of the network
+    data_transform : Transform object
+        The transformation to apply on the data before using it
 
     References
     ----------
@@ -57,6 +65,8 @@ class Autoencoder:
         out_dim,
         layer_sizes=[2000, 1000, 500],
         lr=0.01,
+        scale=True,
+        log=False,
         batch_size=100,
         patience=3,
         epochs=1000,
@@ -68,6 +78,7 @@ class Autoencoder:
         self.out_dim = out_dim
         self.layer_sizes = layer_sizes
         self.lr = lr
+        self.data_transform = Transform(scale, log)
         self.batch_size = batch_size
         self.patience = patience
         self.epochs = epochs
@@ -155,6 +166,8 @@ class Autoencoder:
         data : array
             Array of training samples where each sample is of size `in_dim`
         """
+        data = self.data_transform(data)
+
         if self.pretrain_method:
             self.__pretrainers[self.pretrain_method](data)
 
@@ -180,6 +193,7 @@ class Autoencoder:
         array
             Transformed samples, where each sample is of size `out_dim`
         """
+        data = self.data_transform(data)
         return self.encoder.predict(data, verbose=self.verbose)
 
     def fit_transform(self, data):

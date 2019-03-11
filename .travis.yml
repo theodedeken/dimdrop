@@ -4,6 +4,7 @@ python: 3.6
 sudo: false
 cache: pip
 install:
+  - pip3 install tensorflow
   - pip3 install -e .
   - pip3 install pdoc3
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
