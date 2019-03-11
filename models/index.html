@@ -550,7 +550,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 
     def fit(self, data):
         super().fit(data)
-        data = self.transform(data)
+        data = self.data_transform(data)
         clustering_layer = ClusteringLayer(
             self.k, name=&#39;clustering&#39;)(self.encoder.output)
 
