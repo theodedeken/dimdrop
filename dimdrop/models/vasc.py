@@ -29,6 +29,8 @@ class VASC:
         The input dimension
     out_dim : int
         The output dimension
+    layer_sizes : array
+        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[512, 128, 32]`
     epochs: int, optional
         Maximum number of epochs, default `5000`
     patience: int, optional
@@ -57,6 +59,7 @@ class VASC:
             self,
             in_dim,
             out_dim,
+            layer_sizes=[512, 128, 32],
             epochs=1000,
             patience=3,
             batch_size=100,
@@ -67,6 +70,7 @@ class VASC:
             verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
+        self.layer_sizes = layer_sizes
         self.epochs = epochs
         self.patience = patience
         self.batch_size = batch_size
@@ -83,17 +87,16 @@ class VASC:
         # The first part of model to recover the expr.
         h0 = Dropout(0.5)(expr_in)
         # Encoder layers
-        h1 = Dense(units=512, name='encoder_1',
-                   kernel_regularizer=regularizers.l1(0.01))(h0)
-        h2 = Dense(units=128, name='encoder_2')(h1)
-        h2_relu = Activation('relu')(h2)
-        h3 = Dense(units=32, name='encoder_3')(h2_relu)
-        h3_relu = Activation('relu')(h3)
+        last_layer = h0
+        for i, layer_size in enumerate(self.layer_sizes):
+            last_layer = Dense(
+                units=layer_size, name='encoder_{}'.format(i + 1))(last_layer)
+            last_layer = Activation('relu')(last_layer)
 
-        z_mean = Dense(units=self.out_dim, name='z_mean')(h3_relu)
+        z_mean = Dense(units=self.out_dim, name='z_mean')(last_layer)
         z_log_var = None
         if self.var:
-            z_log_var = Dense(units=2, name='z_log_var')(h3_relu)
+            z_log_var = Dense(units=2, name='z_log_var')(last_layer)
             z_log_var = Activation('softplus')(z_log_var)
 
         # sampling new samples
@@ -103,14 +106,14 @@ class VASC:
             z = Lambda(sampling, output_shape=(self.out_dim,))([z_mean])
 
         # Decoder layers
-        decoder_h1 = Dense(units=32, name='decoder_1')(z)
-        decoder_h1_relu = Activation('relu')(decoder_h1)
-        decoder_h2 = Dense(units=128, name='decoder_2')(decoder_h1_relu)
-        decoder_h2_relu = Activation('relu')(decoder_h2)
-        decoder_h3 = Dense(units=512, name='decoder_3')(decoder_h2_relu)
-        decoder_h3_relu = Activation('relu')(decoder_h3)
+        last_layer = z
+        for i, layer_size in enumerate(self.layer_sizes[::-1]):
+            last_layer = Dense(
+                units=layer_size, name='decoder_{}'.format(i + 1))(last_layer)
+            last_layer = Activation('relu')(last_layer)
+
         expr_x = Dense(units=self.in_dim, activation='sigmoid')(
-            decoder_h3_relu)
+            last_layer)
 
         expr_x_drop = Lambda(lambda x: -x ** 2)(expr_x)
         expr_x_drop_p = Lambda(lambda x: K.exp(x))(expr_x_drop)
@@ -139,14 +142,11 @@ class VASC:
 
         loss_func = VAELoss(in_dim, z_log_var, z_mean)
 
-        opt = RMSprop(lr=self.lr)
+        opt = RMSprop(lr=self.lr, decay=self.lr / self.epochs)
         vae.compile(optimizer=opt, loss=loss_func)
 
-        ae = Model(inputs=[expr_in, temp_in], outputs=[h1, h2, h3, h2_relu, h3_relu,
-                                                       z_mean, z, decoder_h1, decoder_h1_relu,
-                                                       decoder_h2, decoder_h2_relu, decoder_h3, decoder_h3_relu,
-                                                       samples, out
-                                                       ])
+        ae = Model(inputs=[expr_in, temp_in], outputs=[
+                   z_mean, z, samples, out])
 
         self.vae = vae
         self.ae = ae
@@ -204,7 +204,7 @@ class VASC:
             Transformed samples, where each sample is of size `out_dim`
         """
         data = self.data_transform(data)
-        return self.ae.predict([data, np.ones(data.shape, dtype='float32')])[5]
+        return self.ae.predict([data, np.ones(data.shape, dtype='float32')])[0]
 
 
 def sampling(args):

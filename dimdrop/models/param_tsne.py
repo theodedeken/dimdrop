@@ -108,7 +108,7 @@ class ParametricTSNE:
 
         self.model = Sequential(self.layers)
 
-        optimizer = SGD(lr=self.lr)
+        optimizer = SGD(lr=self.lr, decay=self.lr / self.epochs)
         loss = TSNELoss(self.in_dim, self.batch_size)
 
         self.model.compile(

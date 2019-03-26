@@ -106,7 +106,7 @@ class Autoencoder:
         )
         self.model.compile(
             loss='mse',
-            optimizer=Adam(lr=self.lr)
+            optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
         )
         self.encoder = Sequential(
             self.layers[:len(self.layers) // 2]
@@ -150,7 +150,7 @@ class Autoencoder:
 
             stack.compile(
                 loss='mse',
-                optimizer=Adam(lr=self.lr)
+                optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
             )
 
             stack.fit(cur_data, cur_data, epochs=self.epochs, callbacks=[early_stopping],

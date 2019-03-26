@@ -47,7 +47,7 @@ class DEC(Autoencoder):
             [kmeans.cluster_centers_])
 
         self.clustering_model.compile(
-            optimizer=Adam(self.lr),
+            optimizer=Adam(self.lr, decay=self.lr / self.epochs),
             loss='kld'
         )
         sequence = DECSequence(data, self.clustering_model, self.batch_size)
