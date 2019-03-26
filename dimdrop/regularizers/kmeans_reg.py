@@ -1,6 +1,7 @@
 from keras.callbacks import Callback
 import numpy as np
 from keras import backend as K
+from sklearn.cluster import KMeans
 
 import random
 
@@ -38,6 +39,8 @@ class KMeansRegularizer(Callback):
         """
         self.encoder = encoder
         self.input_data = input_data
+        self.cluster_centers = KMeans(n_clusters=len(self.cluster_centers)).fit(
+            encoder.predict(input_data)).cluster_centers_
 
     def on_epoch_end(self, epoch, logs=None):
         """
@@ -75,13 +78,17 @@ class KMeansRegularizer(Callback):
             len(self.cluster_centers)) if np.isnan(self.cluster_centers[i][0])]
         true_centers = [i for i in range(
             len(self.cluster_centers)) if not np.isnan(self.cluster_centers[i][0])]
-        for index in false_centers:
-            sample = random.sample(true_centers, 3)
-            new_center = np.zeros(2)
-            for el in sample:
-                new_center += self.cluster_centers[el]
+        if len(true_centers) < 4:
+            self.cluster_centers = KMeans(n_clusters=len(self.cluster_centers)).fit(
+                self.encoder.predict(self.input_data)).cluster_centers_
+        else:
+            for index in false_centers:
+                sample = random.sample(true_centers, 3)
+                new_center = np.zeros(2)
+                for el in sample:
+                    new_center += self.cluster_centers[el]
 
-            self.cluster_centers[index] = new_center / 3
+                self.cluster_centers[index] = new_center / 3
 
     def __cluster_dist(self, activation):
         dist_2 = K.sum((self.cluster_centers - activation)**2, axis=1)
