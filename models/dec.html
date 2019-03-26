@@ -71,7 +71,7 @@ class DEC(Autoencoder):
             [kmeans.cluster_centers_])
 
         self.clustering_model.compile(
-            optimizer=Adam(self.lr),
+            optimizer=Adam(self.lr, decay=self.lr / self.epochs),
             loss=&#39;kld&#39;
         )
         sequence = DECSequence(data, self.clustering_model, self.batch_size)
@@ -183,7 +183,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
             [kmeans.cluster_centers_])
 
         self.clustering_model.compile(
-            optimizer=Adam(self.lr),
+            optimizer=Adam(self.lr, decay=self.lr / self.epochs),
             loss=&#39;kld&#39;
         )
         sequence = DECSequence(data, self.clustering_model, self.batch_size)

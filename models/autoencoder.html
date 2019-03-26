@@ -130,7 +130,7 @@ class Autoencoder:
         )
         self.model.compile(
             loss=&#39;mse&#39;,
-            optimizer=Adam(lr=self.lr)
+            optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
         )
         self.encoder = Sequential(
             self.layers[:len(self.layers) // 2]
@@ -174,7 +174,7 @@ class Autoencoder:
 
             stack.compile(
                 loss=&#39;mse&#39;,
-                optimizer=Adam(lr=self.lr)
+                optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
             )
 
             stack.fit(cur_data, cur_data, epochs=self.epochs, callbacks=[early_stopping],
@@ -397,7 +397,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         )
         self.model.compile(
             loss=&#39;mse&#39;,
-            optimizer=Adam(lr=self.lr)
+            optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
         )
         self.encoder = Sequential(
             self.layers[:len(self.layers) // 2]
@@ -441,7 +441,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 
             stack.compile(
                 loss=&#39;mse&#39;,
-                optimizer=Adam(lr=self.lr)
+                optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
             )
 
             stack.fit(cur_data, cur_data, epochs=self.epochs, callbacks=[early_stopping],

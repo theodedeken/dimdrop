@@ -215,7 +215,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         )
         self.model.compile(
             loss=&#39;mse&#39;,
-            optimizer=Adam(lr=self.lr)
+            optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
         )
         self.encoder = Sequential(
             self.layers[:len(self.layers) // 2]
@@ -259,7 +259,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 
             stack.compile(
                 loss=&#39;mse&#39;,
-                optimizer=Adam(lr=self.lr)
+                optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
             )
 
             stack.fit(cur_data, cur_data, epochs=self.epochs, callbacks=[early_stopping],
@@ -566,7 +566,7 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
             [kmeans.cluster_centers_])
 
         self.clustering_model.compile(
-            optimizer=Adam(self.lr),
+            optimizer=Adam(self.lr, decay=self.lr / self.epochs),
             loss=&#39;kld&#39;
         )
         sequence = DECSequence(data, self.clustering_model, self.batch_size)
@@ -833,7 +833,7 @@ Beach, Florida USA, 16–18 Apr 2009. PMLR.</li>
 
         self.model = Sequential(self.layers)
 
-        optimizer = SGD(lr=self.lr)
+        optimizer = SGD(lr=self.lr, decay=self.lr / self.epochs)
         loss = TSNELoss(self.in_dim, self.batch_size)
 
         self.model.compile(
@@ -1078,6 +1078,8 @@ See help(type(self)) for accurate signature.</p></section>
 <dd>The input dimension</dd>
 <dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
 <dd>The output dimension</dd>
+<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code></dt>
+<dd>sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: <code>[512, 128, 32]</code></dd>
 <dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>Maximum number of epochs, default <code>5000</code></dd>
 <dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -1109,6 +1111,8 @@ See help(type(self)) for accurate signature.</p></section>
         The input dimension
     out_dim : int
         The output dimension
+    layer_sizes : array
+        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[512, 128, 32]`
     epochs: int, optional
         Maximum number of epochs, default `5000`
     patience: int, optional
@@ -1137,6 +1141,7 @@ See help(type(self)) for accurate signature.</p></section>
             self,
             in_dim,
             out_dim,
+            layer_sizes=[512, 128, 32],
             epochs=1000,
             patience=3,
             batch_size=100,
@@ -1147,6 +1152,7 @@ See help(type(self)) for accurate signature.</p></section>
             verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
+        self.layer_sizes = layer_sizes
         self.epochs = epochs
         self.patience = patience
         self.batch_size = batch_size
@@ -1163,17 +1169,16 @@ See help(type(self)) for accurate signature.</p></section>
         # The first part of model to recover the expr.
         h0 = Dropout(0.5)(expr_in)
         # Encoder layers
-        h1 = Dense(units=512, name=&#39;encoder_1&#39;,
-                   kernel_regularizer=regularizers.l1(0.01))(h0)
-        h2 = Dense(units=128, name=&#39;encoder_2&#39;)(h1)
-        h2_relu = Activation(&#39;relu&#39;)(h2)
-        h3 = Dense(units=32, name=&#39;encoder_3&#39;)(h2_relu)
-        h3_relu = Activation(&#39;relu&#39;)(h3)
+        last_layer = h0
+        for i, layer_size in enumerate(self.layer_sizes):
+            last_layer = Dense(
+                units=layer_size, name=&#39;encoder_{}&#39;.format(i + 1))(last_layer)
+            last_layer = Activation(&#39;relu&#39;)(last_layer)
 
-        z_mean = Dense(units=self.out_dim, name=&#39;z_mean&#39;)(h3_relu)
+        z_mean = Dense(units=self.out_dim, name=&#39;z_mean&#39;)(last_layer)
         z_log_var = None
         if self.var:
-            z_log_var = Dense(units=2, name=&#39;z_log_var&#39;)(h3_relu)
+            z_log_var = Dense(units=2, name=&#39;z_log_var&#39;)(last_layer)
             z_log_var = Activation(&#39;softplus&#39;)(z_log_var)
 
         # sampling new samples
@@ -1183,14 +1188,14 @@ See help(type(self)) for accurate signature.</p></section>
             z = Lambda(sampling, output_shape=(self.out_dim,))([z_mean])
 
         # Decoder layers
-        decoder_h1 = Dense(units=32, name=&#39;decoder_1&#39;)(z)
-        decoder_h1_relu = Activation(&#39;relu&#39;)(decoder_h1)
-        decoder_h2 = Dense(units=128, name=&#39;decoder_2&#39;)(decoder_h1_relu)
-        decoder_h2_relu = Activation(&#39;relu&#39;)(decoder_h2)
-        decoder_h3 = Dense(units=512, name=&#39;decoder_3&#39;)(decoder_h2_relu)
-        decoder_h3_relu = Activation(&#39;relu&#39;)(decoder_h3)
+        last_layer = z
+        for i, layer_size in enumerate(self.layer_sizes[::-1]):
+            last_layer = Dense(
+                units=layer_size, name=&#39;decoder_{}&#39;.format(i + 1))(last_layer)
+            last_layer = Activation(&#39;relu&#39;)(last_layer)
+
         expr_x = Dense(units=self.in_dim, activation=&#39;sigmoid&#39;)(
-            decoder_h3_relu)
+            last_layer)
 
         expr_x_drop = Lambda(lambda x: -x ** 2)(expr_x)
         expr_x_drop_p = Lambda(lambda x: K.exp(x))(expr_x_drop)
@@ -1219,14 +1224,11 @@ See help(type(self)) for accurate signature.</p></section>
 
         loss_func = VAELoss(in_dim, z_log_var, z_mean)
 
-        opt = RMSprop(lr=self.lr)
+        opt = RMSprop(lr=self.lr, decay=self.lr / self.epochs)
         vae.compile(optimizer=opt, loss=loss_func)
 
-        ae = Model(inputs=[expr_in, temp_in], outputs=[h1, h2, h3, h2_relu, h3_relu,
-                                                       z_mean, z, decoder_h1, decoder_h1_relu,
-                                                       decoder_h2, decoder_h2_relu, decoder_h3, decoder_h3_relu,
-                                                       samples, out
-                                                       ])
+        ae = Model(inputs=[expr_in, temp_in], outputs=[
+                   z_mean, z, samples, out])
 
         self.vae = vae
         self.ae = ae
@@ -1284,12 +1286,12 @@ See help(type(self)) for accurate signature.</p></section>
             Transformed samples, where each sample is of size `out_dim`
         &#34;&#34;&#34;
         data = self.data_transform(data)
-        return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]</code></pre>
+        return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[0]</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="dimdrop.models.VASC.__init__"><code class="name flex">
-<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=False, scale=True, verbose=0)</span>
+<span>def <span class="ident">__init__</span></span>(<span>self, in_dim, out_dim, layer_sizes=[512, 128, 32], epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=False, scale=True, verbose=0)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Initialize self.
@@ -1300,6 +1302,7 @@ See help(type(self)) for accurate signature.</p></section>
         self,
         in_dim,
         out_dim,
+        layer_sizes=[512, 128, 32],
         epochs=1000,
         patience=3,
         batch_size=100,
@@ -1310,6 +1313,7 @@ See help(type(self)) for accurate signature.</p></section>
         verbose=0):
     self.in_dim = in_dim
     self.out_dim = out_dim
+    self.layer_sizes = layer_sizes
     self.epochs = epochs
     self.patience = patience
     self.batch_size = batch_size
@@ -1418,7 +1422,7 @@ See help(type(self)) for accurate signature.</p></section>
         Transformed samples, where each sample is of size `out_dim`
     &#34;&#34;&#34;
     data = self.data_transform(data)
-    return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[5]</code></pre>
+    return self.ae.predict([data, np.ones(data.shape, dtype=&#39;float32&#39;)])[0]</code></pre>
 </details>
 </dd>
 </dl>
