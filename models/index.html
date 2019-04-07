@@ -575,8 +575,25 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         if self.verbose:
             print(&#39;Clustering optimization&#39;)
         self.clustering_model.fit_generator(sequence, math.ceil(data.shape[0] / self.batch_size),  epochs=self.epochs, callbacks=[early_stopping],
-                                            verbose=self.verbose)</code></pre>
+                                            verbose=self.verbose)
+
+    def soft_cluster_assignments(self, data):
+        return np.apply_along_axis(np.argmax, 1, self.clustering_model.predict(data))</code></pre>
 </details>
+<h3>Methods</h3>
+<dl>
+<dt id="dimdrop.models.DEC.soft_cluster_assignments"><code class="name flex">
+<span>def <span class="ident">soft_cluster_assignments</span></span>(<span>self, data)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def soft_cluster_assignments(self, data):
+    return np.apply_along_axis(np.argmax, 1, self.clustering_model.predict(data))</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="dimdrop.models.autoencoder.Autoencoder" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder">Autoencoder</a></b></code>:
@@ -668,8 +685,39 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         else:
             raise AttributeError
         super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, scale=scale, log=log, batch_size=batch_size, patience=patience,
-                         epochs=epochs, regularizer=regularizer_obj, pretrain_method=None, verbose=verbose)</code></pre>
+                         epochs=epochs, regularizer=regularizer_obj, pretrain_method=None, verbose=verbose)
+
+    def get_cluster_centers(self):
+        return self.regularizer.cluster_centers
+
+    def get_cluster_assignments(self):
+        return self.regularizer.cluster_assignments</code></pre>
 </details>
+<h3>Methods</h3>
+<dl>
+<dt id="dimdrop.models.DeepCluster.get_cluster_assignments"><code class="name flex">
+<span>def <span class="ident">get_cluster_assignments</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def get_cluster_assignments(self):
+    return self.regularizer.cluster_assignments</code></pre>
+</details>
+</dd>
+<dt id="dimdrop.models.DeepCluster.get_cluster_centers"><code class="name flex">
+<span>def <span class="ident">get_cluster_centers</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def get_cluster_centers(self):
+    return self.regularizer.cluster_centers</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="dimdrop.models.autoencoder.Autoencoder" href="autoencoder.html#dimdrop.models.autoencoder.Autoencoder">Autoencoder</a></b></code>:
@@ -1463,9 +1511,16 @@ See help(type(self)) for accurate signature.</p></section>
 </li>
 <li>
 <h4><code><a title="dimdrop.models.DEC" href="#dimdrop.models.DEC">DEC</a></code></h4>
+<ul class="">
+<li><code><a title="dimdrop.models.DEC.soft_cluster_assignments" href="#dimdrop.models.DEC.soft_cluster_assignments">soft_cluster_assignments</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="dimdrop.models.DeepCluster" href="#dimdrop.models.DeepCluster">DeepCluster</a></code></h4>
+<ul class="">
+<li><code><a title="dimdrop.models.DeepCluster.get_cluster_assignments" href="#dimdrop.models.DeepCluster.get_cluster_assignments">get_cluster_assignments</a></code></li>
+<li><code><a title="dimdrop.models.DeepCluster.get_cluster_centers" href="#dimdrop.models.DeepCluster.get_cluster_centers">get_cluster_centers</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="dimdrop.models.ParametricTSNE" href="#dimdrop.models.ParametricTSNE">ParametricTSNE</a></code></h4>
