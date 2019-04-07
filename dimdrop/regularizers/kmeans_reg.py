@@ -5,6 +5,8 @@ from sklearn.cluster import KMeans
 
 import random
 
+# TODO update documentation
+
 
 class KMeansRegularizer(Callback):
     """
@@ -25,6 +27,8 @@ class KMeansRegularizer(Callback):
         self.cluster_centers = cluster_centers
         self.batch_size = batch_size
         self.weight = K.variable(weight)
+        self.cluster_assignments = [0, 0]
+        self.__assignment_id = 0
 
     def init_fit(self, encoder, input_data):
         """
@@ -41,6 +45,8 @@ class KMeansRegularizer(Callback):
         self.input_data = input_data
         self.cluster_centers = KMeans(n_clusters=len(self.cluster_centers)).fit(
             encoder.predict(input_data)).cluster_centers_
+        self.cluster_assignments = np.zeros(len(input_data), dtype=int)
+        self.__assignment_id = 0
 
     def on_epoch_end(self, epoch, logs=None):
         """
@@ -57,15 +63,18 @@ class KMeansRegularizer(Callback):
         encoding = self.encoder.predict(self.input_data)
         new_centers = np.zeros(self.cluster_centers.shape)
         counters = np.zeros(self.cluster_centers.shape[0])
-        for point in encoding:
-            dist_2 = np.sum((self.cluster_centers - point)**2, axis=1)
-            min_dist = np.argmin(dist_2)
-            new_centers[min_dist] += point
-            counters[min_dist] += 1
+        for i, point in enumerate(encoding):
+            #dist_2 = np.sum((self.cluster_centers - point)**2, axis=1)
+            #min_dist = np.argmin(dist_2)
+            # print(self.cluster_assignments[i])
+            cluster = self.cluster_assignments[i]
+            new_centers[cluster] += point
+            counters[cluster] += 1
 
         self.cluster_centers = np.array(
             [new_centers[i] / counters[i] for i in range(len(counters))])
         self.__fix_centers()
+        self.__assignment_id = 0
 
     def __call__(self, activations):
         dists = K.map_fn(self.__cluster_dist, activations)
@@ -91,7 +100,11 @@ class KMeansRegularizer(Callback):
                 self.cluster_centers[index] = new_center / 3
 
     def __cluster_dist(self, activation):
+        print('called')
         dist_2 = K.sum((self.cluster_centers - activation)**2, axis=1)
         min_dist = np.argmin(dist_2)
+
+        self.cluster_assignments[self.__assignment_id] = min_dist
+        self.__assignment_id += 1
 
         return dist_2[min_dist]

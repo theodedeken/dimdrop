@@ -3,6 +3,7 @@ from keras.callbacks import EarlyStopping
 from keras.models import Model
 from sklearn.cluster import KMeans
 import math
+import numpy as np
 
 from .autoencoder import Autoencoder
 from ..layers import ClusteringLayer
@@ -57,3 +58,6 @@ class DEC(Autoencoder):
             print('Clustering optimization')
         self.clustering_model.fit_generator(sequence, math.ceil(data.shape[0] / self.batch_size),  epochs=self.epochs, callbacks=[early_stopping],
                                             verbose=self.verbose)
+
+    def soft_cluster_assignments(self, data):
+        return np.apply_along_axis(np.argmax, 1, self.clustering_model.predict(data))
