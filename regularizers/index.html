@@ -107,7 +107,7 @@ __all__ = [
         self.cluster_assignments = np.zeros(len(input_data), dtype=int)
         self.__assignment_id = 0
 
-    def on_epoch_end(self, epoch, logs=None):
+    def __on_epoch_end_backup(self, epoch, logs=None):
         &#34;&#34;&#34;
         Executed at the end of every epoch. Recalculates the cluster centers.
 
@@ -123,9 +123,31 @@ __all__ = [
         new_centers = np.zeros(self.cluster_centers.shape)
         counters = np.zeros(self.cluster_centers.shape[0])
         for i, point in enumerate(encoding):
-            #dist_2 = np.sum((self.cluster_centers - point)**2, axis=1)
-            #min_dist = np.argmin(dist_2)
-            # print(self.cluster_assignments[i])
+            cluster = self.cluster_assignments[i]
+            new_centers[cluster] += point
+            counters[cluster] += 1
+
+        self.cluster_centers = np.array(
+            [new_centers[i] / counters[i] for i in range(len(counters))])
+        self.__fix_centers()
+        self.__assignment_id = 0
+
+    def on_batch_end(self, batch, logs=None):
+        &#34;&#34;&#34;
+        Executed at the end of every batch. Recalculates the cluster centers.
+
+        Parameters
+        ----------
+        epoch : int
+            The current epoch
+        logs : dictionary
+            The logs of the model
+        &#34;&#34;&#34;
+        # update cluster centers
+        encoding = self.encoder.predict(self.input_data)
+        new_centers = np.zeros(self.cluster_centers.shape)
+        counters = np.zeros(self.cluster_centers.shape[0])
+        for i, point in enumerate(encoding):
             cluster = self.cluster_assignments[i]
             new_centers[cluster] += point
             counters[cluster] += 1
@@ -219,11 +241,11 @@ See help(type(self)) for accurate signature.</p></section>
     self.__assignment_id = 0</code></pre>
 </details>
 </dd>
-<dt id="dimdrop.regularizers.KMeansRegularizer.on_epoch_end"><code class="name flex">
-<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch, logs=None)</span>
+<dt id="dimdrop.regularizers.KMeansRegularizer.on_batch_end"><code class="name flex">
+<span>def <span class="ident">on_batch_end</span></span>(<span>self, batch, logs=None)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Executed at the end of every epoch. Recalculates the cluster centers.</p>
+<section class="desc"><p>Executed at the end of every batch. Recalculates the cluster centers.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>epoch</code></strong> :&ensp;<code>int</code></dt>
@@ -233,9 +255,9 @@ See help(type(self)) for accurate signature.</p></section>
 </dl></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def on_epoch_end(self, epoch, logs=None):
+<pre><code class="python">def on_batch_end(self, batch, logs=None):
     &#34;&#34;&#34;
-    Executed at the end of every epoch. Recalculates the cluster centers.
+    Executed at the end of every batch. Recalculates the cluster centers.
 
     Parameters
     ----------
@@ -249,9 +271,6 @@ See help(type(self)) for accurate signature.</p></section>
     new_centers = np.zeros(self.cluster_centers.shape)
     counters = np.zeros(self.cluster_centers.shape[0])
     for i, point in enumerate(encoding):
-        #dist_2 = np.sum((self.cluster_centers - point)**2, axis=1)
-        #min_dist = np.argmin(dist_2)
-        # print(self.cluster_assignments[i])
         cluster = self.cluster_assignments[i]
         new_centers[cluster] += point
         counters[cluster] += 1
@@ -367,7 +386,7 @@ See help(type(self)) for accurate signature.</p></section>
 <ul class="">
 <li><code><a title="dimdrop.regularizers.KMeansRegularizer.__init__" href="#dimdrop.regularizers.KMeansRegularizer.__init__">__init__</a></code></li>
 <li><code><a title="dimdrop.regularizers.KMeansRegularizer.init_fit" href="#dimdrop.regularizers.KMeansRegularizer.init_fit">init_fit</a></code></li>
-<li><code><a title="dimdrop.regularizers.KMeansRegularizer.on_epoch_end" href="#dimdrop.regularizers.KMeansRegularizer.on_epoch_end">on_epoch_end</a></code></li>
+<li><code><a title="dimdrop.regularizers.KMeansRegularizer.on_batch_end" href="#dimdrop.regularizers.KMeansRegularizer.on_batch_end">on_batch_end</a></code></li>
 </ul>
 </li>
 <li>
