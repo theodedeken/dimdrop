@@ -48,7 +48,7 @@ class KMeansRegularizer(Callback):
         self.cluster_assignments = np.zeros(len(input_data), dtype=int)
         self.__assignment_id = 0
 
-    def on_epoch_end(self, epoch, logs=None):
+    def __on_epoch_end_backup(self, epoch, logs=None):
         """
         Executed at the end of every epoch. Recalculates the cluster centers.
 
@@ -64,9 +64,31 @@ class KMeansRegularizer(Callback):
         new_centers = np.zeros(self.cluster_centers.shape)
         counters = np.zeros(self.cluster_centers.shape[0])
         for i, point in enumerate(encoding):
-            #dist_2 = np.sum((self.cluster_centers - point)**2, axis=1)
-            #min_dist = np.argmin(dist_2)
-            # print(self.cluster_assignments[i])
+            cluster = self.cluster_assignments[i]
+            new_centers[cluster] += point
+            counters[cluster] += 1
+
+        self.cluster_centers = np.array(
+            [new_centers[i] / counters[i] for i in range(len(counters))])
+        self.__fix_centers()
+        self.__assignment_id = 0
+
+    def on_batch_end(self, batch, logs=None):
+        """
+        Executed at the end of every batch. Recalculates the cluster centers.
+
+        Parameters
+        ----------
+        epoch : int
+            The current epoch
+        logs : dictionary
+            The logs of the model
+        """
+        # update cluster centers
+        encoding = self.encoder.predict(self.input_data)
+        new_centers = np.zeros(self.cluster_centers.shape)
+        counters = np.zeros(self.cluster_centers.shape[0])
+        for i, point in enumerate(encoding):
             cluster = self.cluster_assignments[i]
             new_centers[cluster] += point
             counters[cluster] += 1

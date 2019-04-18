@@ -89,8 +89,12 @@ class VASC:
         # Encoder layers
         last_layer = h0
         for i, layer_size in enumerate(self.layer_sizes):
-            last_layer = Dense(
-                units=layer_size, name='encoder_{}'.format(i + 1))(last_layer)
+            if i == 0:
+                last_layer = Dense(
+                    units=layer_size, name='encoder_{}'.format(i + 1), kernel_regularizer=regularizers.l1(0.01))(last_layer)
+            else:
+                last_layer = Dense(
+                    units=layer_size, name='encoder_{}'.format(i + 1))(last_layer)
             last_layer = Activation('relu')(last_layer)
 
         z_mean = Dense(units=self.out_dim, name='z_mean')(last_layer)
