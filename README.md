@@ -1,4 +1,6 @@
-# dimdrop - Dimensionality reduction using Neural Networks
+# dimdrop
+**Dimensionality reduction using Neural Networks**
+
 A collection of dimensionality reduction methods using neural networks.
 
 ## Documentation
