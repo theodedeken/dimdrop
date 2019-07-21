@@ -7,8 +7,11 @@ install:
   - pip3 install tensorflow
   - pip3 install -e .
   - pip3 install pdoc3
+  - pip3 install pycodestyle
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
-script: pdoc3 --html dimdrop --overwrite
+script: 
+  - pycodestyle dimdrop/
+  - pdoc3 --html dimdrop --overwrite
 deploy:
   provider: pages
   local-dir: html/dimdrop
