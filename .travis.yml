@@ -11,7 +11,7 @@ install:
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
 script: 
   - pycodestyle dimdrop/
-  - pdoc3 --html dimdrop --overwrite
+  - pdoc3 --html dimdrop --force
 deploy:
   provider: pages
   local-dir: html/dimdrop
