@@ -25,8 +25,20 @@ class DEC(Autoencoder):
             patience=3,
             tol=0.01,
             verbose=0):
-        super().__init__(in_dim, out_dim, layer_sizes=layer_sizes, lr=lr, scale=scale, log=log, batch_size=batch_size, patience=patience,
-                         epochs=epochs, regularizer=None, pretrain_method='stacked', verbose=verbose)
+        super().__init__(
+            in_dim,
+            out_dim,
+            layer_sizes=layer_sizes,
+            lr=lr,
+            scale=scale,
+            log=log,
+            batch_size=batch_size,
+            patience=patience,
+            epochs=epochs,
+            regularizer=None,
+            pretrain_method='stacked',
+            verbose=verbose
+        )
         self.k = k
         self.tol = tol
 
@@ -56,8 +68,17 @@ class DEC(Autoencoder):
         early_stopping = EarlyStopping(monitor='loss', patience=self.patience)
         if self.verbose:
             print('Clustering optimization')
-        self.clustering_model.fit_generator(sequence, math.ceil(data.shape[0] / self.batch_size),  epochs=self.epochs, callbacks=[early_stopping],
-                                            verbose=self.verbose)
+        self.clustering_model.fit_generator(
+            sequence,
+            math.ceil(data.shape[0] / self.batch_size),
+            epochs=self.epochs,
+            callbacks=[early_stopping],
+            verbose=self.verbose
+        )
 
     def soft_cluster_assignments(self, data):
-        return np.apply_along_axis(np.argmax, 1, self.clustering_model.predict(data))
+        return np.apply_along_axis(
+            np.argmax,
+            1,
+            self.clustering_model.predict(data)
+        )

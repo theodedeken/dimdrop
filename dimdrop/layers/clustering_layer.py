@@ -1,5 +1,6 @@
 """
-Clustering layer implementation by Chengwei Zhang: https://www.dlology.com/blog/how-to-do-unsupervised-clustering-with-keras/
+Clustering layer implementation by Chengwei Zhang:
+https://www.dlology.com/blog/how-to-do-unsupervised-clustering-with-keras/
 
 The MIT License (MIT)
 
@@ -28,8 +29,9 @@ from keras.engine.topology import Layer, InputSpec
 
 class ClusteringLayer(Layer):
     """
-    Clustering layer converts input sample (feature) to soft label, i.e. a vector that represents the probability of the
-    sample belonging to each cluster. The probability is calculated with student's t-distribution.
+    Clustering layer converts input sample (feature) to soft label, i.e. a
+    vector that represents the probability of the sample belonging to each
+    cluster. The probability is calculated with student's t-distribution.
 
     Example
     -------
@@ -40,10 +42,11 @@ class ClusteringLayer(Layer):
     -----------
     n_clusters: int
         number of clusters.
-    weights: list of Numpy array with shape `(n_clusters, n_features)`, optional
+    weights: list of Numpy array, shape `(n_clusters, n_features)`, optional
         Represents the initial cluster centers.
     alpha: float, optional
-        degrees of freedom parameter in Student's t-distribution. Default to 1.0.
+        degrees of freedom parameter in Student's t-distribution.
+        Default to 1.0.
 
     Input shape:
     ------------
@@ -78,8 +81,8 @@ class ClusteringLayer(Layer):
         """ student t-distribution, as same as used in t-SNE algorithm.
          Measure the similarity between embedded point z_i and centroid µ_j.
                  q_ij = 1/(1+dist(x_i, µ_j)^2), then normalize it.
-                 q_ij can be interpreted as the probability of assigning sample i to cluster j.
-                 (i.e., a soft assignment)
+                 q_ij can be interpreted as the probability of assigning
+                 sample i to cluster j. (i.e., a soft assignment)
 
         Parameters:
         -----------
@@ -89,10 +92,11 @@ class ClusteringLayer(Layer):
         Returns:
         --------
         q: tensor of shape `(n_samples, n_clusters)`
-            student's t-distribution, or soft labels for each sample. 
+            student's t-distribution, or soft labels for each sample.
         """
-        q = 1.0 / (1.0 + (K.sum(K.square(K.expand_dims(inputs,
-                                                       axis=1) - self.clusters), axis=2) / self.alpha))
+        q = 1.0 / (1.0 + (K.sum(K.square(
+            K.expand_dims(inputs, axis=1) - self.clusters
+        ), axis=2) / self.alpha))
         q **= (self.alpha + 1.0) / 2.0
         # Make sure each sample's 10 values add up to 1.
         q = K.transpose(K.transpose(q) / K.sum(q, axis=1))

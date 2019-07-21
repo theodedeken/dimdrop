@@ -10,33 +10,40 @@ from ..util import Transform
 
 class Autoencoder:
     """
-    A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.
+    A deep autoencoder model as baseline for other autoencoder based
+    dimensionality reduction methods.
 
-    The defaults are set to the parameters explained in a paper of Geoffrey Hinton.
+    The defaults are set to the parameters explained in a paper of
+    Geoffrey Hinton.
 
     Parameters
     ----------
-    in_dim : int 
+    in_dim : int
         The input dimension
     out_dim : int
         The output dimension
     layer_sizes : array of int, optional
-        The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
-    lr : float, optional 
+        The sizes of the layers of the network, is mirrored over encoder and
+        decoder parts, default `[2000, 1000, 500]`
+    lr : float, optional
         The learning rate of the network, default `0.01`
     log : boolean, optional
         Whether log-transformation should be performed, default `False`
     scale : boolean, optional
-        Whether scaling (making values within [0,1]) should be performed, default `True`
+        Whether scaling (making values within [0,1]) should be performed,
+        default `True`
     batch_size : int, optional
         The batch size of the network, default `100`
     patience : int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
+        The amount of epochs without improvement before the network stops
+        training, default `3`
     epochs : int, optional
         The maximum amount of epochs, default `1000`
     regularizer : keras regularizer, optional
-        A regularizer to use for the middle layer of the autoencoder. 
-        `None` or instance of `dimdrop.regularizers.KMeansRegularizer`, `dimdrop.regularizers.GMMRegularizer`, `dimdrop.regularizers.TSNERegularizer`.
+        A regularizer to use for the middle layer of the autoencoder.
+        `None` or instance of `dimdrop.regularizers.KMeansRegularizer`,
+        `dimdrop.regularizers.GMMRegularizer`,
+        `dimdrop.regularizers.TSNERegularizer`.
     pretrain_method : string, optional
         The pretrain method to use. `None`, `'rbm'` or `'stacked'`
     verbose : int, optional
@@ -55,8 +62,8 @@ class Autoencoder:
 
     References
     ----------
-    - G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data with neural 
-        networks. *Science*, 313(5786):504–507, July 2006.
+    - G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data
+      with neural networks. *Science*, 313(5786):504–507, July 2006.
     """
 
     def __init__(
@@ -91,12 +98,17 @@ class Autoencoder:
 
     def __init_network(self):
         activation = 'sigmoid' if self.pretrain_method == 'rbm' else 'relu'
-        self.layers = [
-            Dense(self.layer_sizes[0], activation=activation, input_shape=(self.in_dim,))]
+        self.layers = [Dense(
+            self.layer_sizes[0],
+            activation=activation,
+            input_shape=(self.in_dim,)
+        )]
         self.layers += [Dense(size, activation=activation)
                         for size in self.layer_sizes[1:]]
-        self.layers += [Dense(self.out_dim, activity_regularizer=self.regularizer)
-                        ] if self.regularizer else [Dense(self.out_dim)]
+        self.layers += [Dense(
+            self.out_dim,
+            activity_regularizer=self.regularizer
+        )] if self.regularizer else [Dense(self.out_dim)]
         self.layers += [Dense(size, activation=activation)
                         for size in self.layer_sizes[::-1]]
         self.layers += [Dense(self.in_dim)]
@@ -113,8 +125,13 @@ class Autoencoder:
         )
 
     def __pretrain_rbm(self, data):
-        rbms = [BernoulliRBM(batch_size=self.batch_size, learning_rate=self.lr,
-                             n_components=num, n_iter=20, verbose=self.verbose) for num in self.layer_sizes + [self.out_dim]]
+        rbms = [BernoulliRBM(
+            batch_size=self.batch_size,
+            learning_rate=self.lr,
+            n_components=num,
+            n_iter=20,
+            verbose=self.verbose
+        ) for num in self.layer_sizes + [self.out_dim]]
         current = data
         for i, rbm in enumerate(rbms):
             if self.verbose:
@@ -153,8 +170,14 @@ class Autoencoder:
                 optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
             )
 
-            stack.fit(cur_data, cur_data, epochs=self.epochs, callbacks=[early_stopping],
-                      batch_size=self.batch_size, verbose=self.verbose)
+            stack.fit(
+                cur_data,
+                cur_data,
+                epochs=self.epochs,
+                callbacks=[early_stopping],
+                batch_size=self.batch_size,
+                verbose=self.verbose
+            )
             cur_data = stack_encode.predict(cur_data)
 
     def fit(self, data):
@@ -186,7 +209,8 @@ class Autoencoder:
         Parameters
         ----------
         data : array
-            Array of samples to be transformed, where each sample is of size `in_dim`
+            Array of samples to be transformed, where each sample is of size
+            `in_dim`
 
         Returns
         -------

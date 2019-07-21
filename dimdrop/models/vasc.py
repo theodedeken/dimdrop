@@ -1,7 +1,8 @@
 """
 Code adapted from https://github.com/wang-research/VASC
 """
-# FIXME if possible reimplement annealing for gumbel approximation in more idiomatic keras code
+# FIXME if possible reimplement annealing for gumbel approximation in more
+# idiomatic keras code
 
 # -*- coding: utf-8 -*-
 import h5py
@@ -13,7 +14,18 @@ from keras import regularizers
 from keras.models import Model
 import keras.backend as K
 from keras.layers.merge import concatenate, multiply
-from keras.layers import Input, Dense, Activation, Lambda, RepeatVector, Reshape, Layer, Dropout, BatchNormalization, Permute
+from keras.layers import (
+    Input,
+    Dense,
+    Activation,
+    Lambda,
+    RepeatVector,
+    Reshape,
+    Layer,
+    Dropout,
+    BatchNormalization,
+    Permute
+)
 from keras.callbacks import EarlyStopping
 from ..losses import VAELoss
 from ..util import Transform
@@ -30,11 +42,13 @@ class VASC:
     out_dim : int
         The output dimension
     layer_sizes : array
-        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[512, 128, 32]`
+        sizes of each layer in the neural network, default is the structure
+        proposed in the original paper, namely: `[512, 128, 32]`
     epochs: int, optional
         Maximum number of epochs, default `5000`
     patience: int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
+        The amount of epochs without improvement before the network stops
+        training, default `3`
     batch_size: int, optional
         The batch size for stochastic optimization, default `100`
     lr : float, optional
@@ -44,7 +58,8 @@ class VASC:
     log: boolean, optional
         Whether log-transformation should be performed, default `False`
     scale: boolean, optional
-        Whether scaling (making values within [0,1]) should be performed, default `True`
+        Whether scaling (making values within [0,1]) should be performed,
+        default `True`
 
     Attributes:
     -----------
@@ -91,10 +106,15 @@ class VASC:
         for i, layer_size in enumerate(self.layer_sizes):
             if i == 0:
                 last_layer = Dense(
-                    units=layer_size, name='encoder_{}'.format(i + 1), kernel_regularizer=regularizers.l1(0.01))(last_layer)
+                    units=layer_size,
+                    name='encoder_{}'.format(i + 1),
+                    kernel_regularizer=regularizers.l1(0.01)
+                )(last_layer)
             else:
                 last_layer = Dense(
-                    units=layer_size, name='encoder_{}'.format(i + 1))(last_layer)
+                    units=layer_size,
+                    name='encoder_{}'.format(i + 1)
+                )(last_layer)
             last_layer = Activation('relu')(last_layer)
 
         z_mean = Dense(units=self.out_dim, name='z_mean')(last_layer)
@@ -173,8 +193,15 @@ class VASC:
 
         early_stopping = EarlyStopping(monitor='loss', patience=self.patience)
 
-        self.vae.fit([data, tau_in], data, epochs=self.epochs, batch_size=self.batch_size,
-                     shuffle=True, verbose=self.verbose, callbacks=[early_stopping])
+        self.vae.fit(
+            [data, tau_in],
+            data,
+            epochs=self.epochs,
+            batch_size=self.batch_size,
+            shuffle=True,
+            verbose=self.verbose,
+            callbacks=[early_stopping]
+        )
 
     def fit_transform(self, data):
         """
@@ -200,7 +227,8 @@ class VASC:
         Parameters
         ----------
         data : array
-            Array of samples to be transformed, where each sample is of size `in_dim`
+            Array of samples to be transformed, where each sample is of size
+            `in_dim`
 
         Returns
         -------
