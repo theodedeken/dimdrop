@@ -26,7 +26,8 @@
 <pre><code class="python">&#34;&#34;&#34;
 Code adapted from https://github.com/wang-research/VASC
 &#34;&#34;&#34;
-# FIXME if possible reimplement annealing for gumbel approximation in more idiomatic keras code
+# FIXME if possible reimplement annealing for gumbel approximation in more
+# idiomatic keras code
 
 # -*- coding: utf-8 -*-
 import h5py
@@ -38,7 +39,18 @@ from keras import regularizers
 from keras.models import Model
 import keras.backend as K
 from keras.layers.merge import concatenate, multiply
-from keras.layers import Input, Dense, Activation, Lambda, RepeatVector, Reshape, Layer, Dropout, BatchNormalization, Permute
+from keras.layers import (
+    Input,
+    Dense,
+    Activation,
+    Lambda,
+    RepeatVector,
+    Reshape,
+    Layer,
+    Dropout,
+    BatchNormalization,
+    Permute
+)
 from keras.callbacks import EarlyStopping
 from ..losses import VAELoss
 from ..util import Transform
@@ -55,11 +67,13 @@ class VASC:
     out_dim : int
         The output dimension
     layer_sizes : array
-        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[512, 128, 32]`
+        sizes of each layer in the neural network, default is the structure
+        proposed in the original paper, namely: `[512, 128, 32]`
     epochs: int, optional
         Maximum number of epochs, default `5000`
     patience: int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
+        The amount of epochs without improvement before the network stops
+        training, default `3`
     batch_size: int, optional
         The batch size for stochastic optimization, default `100`
     lr : float, optional
@@ -69,7 +83,8 @@ class VASC:
     log: boolean, optional
         Whether log-transformation should be performed, default `False`
     scale: boolean, optional
-        Whether scaling (making values within [0,1]) should be performed, default `True`
+        Whether scaling (making values within [0,1]) should be performed,
+        default `True`
 
     Attributes:
     -----------
@@ -116,10 +131,15 @@ class VASC:
         for i, layer_size in enumerate(self.layer_sizes):
             if i == 0:
                 last_layer = Dense(
-                    units=layer_size, name=&#39;encoder_{}&#39;.format(i + 1), kernel_regularizer=regularizers.l1(0.01))(last_layer)
+                    units=layer_size,
+                    name=&#39;encoder_{}&#39;.format(i + 1),
+                    kernel_regularizer=regularizers.l1(0.01)
+                )(last_layer)
             else:
                 last_layer = Dense(
-                    units=layer_size, name=&#39;encoder_{}&#39;.format(i + 1))(last_layer)
+                    units=layer_size,
+                    name=&#39;encoder_{}&#39;.format(i + 1)
+                )(last_layer)
             last_layer = Activation(&#39;relu&#39;)(last_layer)
 
         z_mean = Dense(units=self.out_dim, name=&#39;z_mean&#39;)(last_layer)
@@ -198,8 +218,15 @@ class VASC:
 
         early_stopping = EarlyStopping(monitor=&#39;loss&#39;, patience=self.patience)
 
-        self.vae.fit([data, tau_in], data, epochs=self.epochs, batch_size=self.batch_size,
-                     shuffle=True, verbose=self.verbose, callbacks=[early_stopping])
+        self.vae.fit(
+            [data, tau_in],
+            data,
+            epochs=self.epochs,
+            batch_size=self.batch_size,
+            shuffle=True,
+            verbose=self.verbose,
+            callbacks=[early_stopping]
+        )
 
     def fit_transform(self, data):
         &#34;&#34;&#34;
@@ -225,7 +252,8 @@ class VASC:
         Parameters
         ----------
         data : array
-            Array of samples to be transformed, where each sample is of size `in_dim`
+            Array of samples to be transformed, where each sample is of size
+            `in_dim`
 
         Returns
         -------
@@ -354,11 +382,13 @@ The input dimension
 out_dim : int
 The output dimension
 layer_sizes : array
-sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: <code>[512, 128, 32]</code>
+sizes of each layer in the neural network, default is the structure
+proposed in the original paper, namely: <code>[512, 128, 32]</code>
 epochs: int, optional
 Maximum number of epochs, default <code>5000</code>
 patience: int, optional
-The amount of epochs without improvement before the network stops training, default <code>3</code>
+The amount of epochs without improvement before the network stops
+training, default <code>3</code>
 batch_size: int, optional
 The batch size for stochastic optimization, default <code>100</code>
 lr : float, optional
@@ -368,7 +398,8 @@ Whether to estimate the variance parameters, default <code>False</code>
 log: boolean, optional
 Whether log-transformation should be performed, default <code>False</code>
 scale: boolean, optional
-Whether scaling (making values within [0,1]) should be performed, default <code>True</code></p>
+Whether scaling (making values within [0,1]) should be performed,
+default <code>True</code></p>
 <h2 id="attributes">Attributes:</h2>
 <p>TODO</p>
 <h2 id="references">References:</h2>
@@ -386,11 +417,13 @@ Whether scaling (making values within [0,1]) should be performed, default <code>
     out_dim : int
         The output dimension
     layer_sizes : array
-        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[512, 128, 32]`
+        sizes of each layer in the neural network, default is the structure
+        proposed in the original paper, namely: `[512, 128, 32]`
     epochs: int, optional
         Maximum number of epochs, default `5000`
     patience: int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
+        The amount of epochs without improvement before the network stops
+        training, default `3`
     batch_size: int, optional
         The batch size for stochastic optimization, default `100`
     lr : float, optional
@@ -400,7 +433,8 @@ Whether scaling (making values within [0,1]) should be performed, default <code>
     log: boolean, optional
         Whether log-transformation should be performed, default `False`
     scale: boolean, optional
-        Whether scaling (making values within [0,1]) should be performed, default `True`
+        Whether scaling (making values within [0,1]) should be performed,
+        default `True`
 
     Attributes:
     -----------
@@ -447,10 +481,15 @@ Whether scaling (making values within [0,1]) should be performed, default <code>
         for i, layer_size in enumerate(self.layer_sizes):
             if i == 0:
                 last_layer = Dense(
-                    units=layer_size, name=&#39;encoder_{}&#39;.format(i + 1), kernel_regularizer=regularizers.l1(0.01))(last_layer)
+                    units=layer_size,
+                    name=&#39;encoder_{}&#39;.format(i + 1),
+                    kernel_regularizer=regularizers.l1(0.01)
+                )(last_layer)
             else:
                 last_layer = Dense(
-                    units=layer_size, name=&#39;encoder_{}&#39;.format(i + 1))(last_layer)
+                    units=layer_size,
+                    name=&#39;encoder_{}&#39;.format(i + 1)
+                )(last_layer)
             last_layer = Activation(&#39;relu&#39;)(last_layer)
 
         z_mean = Dense(units=self.out_dim, name=&#39;z_mean&#39;)(last_layer)
@@ -529,8 +568,15 @@ Whether scaling (making values within [0,1]) should be performed, default <code>
 
         early_stopping = EarlyStopping(monitor=&#39;loss&#39;, patience=self.patience)
 
-        self.vae.fit([data, tau_in], data, epochs=self.epochs, batch_size=self.batch_size,
-                     shuffle=True, verbose=self.verbose, callbacks=[early_stopping])
+        self.vae.fit(
+            [data, tau_in],
+            data,
+            epochs=self.epochs,
+            batch_size=self.batch_size,
+            shuffle=True,
+            verbose=self.verbose,
+            callbacks=[early_stopping]
+        )
 
     def fit_transform(self, data):
         &#34;&#34;&#34;
@@ -556,7 +602,8 @@ Whether scaling (making values within [0,1]) should be performed, default <code>
         Parameters
         ----------
         data : array
-            Array of samples to be transformed, where each sample is of size `in_dim`
+            Array of samples to be transformed, where each sample is of size
+            `in_dim`
 
         Returns
         -------
@@ -595,8 +642,15 @@ Whether scaling (making values within [0,1]) should be performed, default <code>
 
     early_stopping = EarlyStopping(monitor=&#39;loss&#39;, patience=self.patience)
 
-    self.vae.fit([data, tau_in], data, epochs=self.epochs, batch_size=self.batch_size,
-                 shuffle=True, verbose=self.verbose, callbacks=[early_stopping])</code></pre>
+    self.vae.fit(
+        [data, tau_in],
+        data,
+        epochs=self.epochs,
+        batch_size=self.batch_size,
+        shuffle=True,
+        verbose=self.verbose,
+        callbacks=[early_stopping]
+    )</code></pre>
 </details>
 </dd>
 <dt id="dimdrop.models.vasc.VASC.fit_transform"><code class="name flex">
@@ -642,7 +696,8 @@ Whether scaling (making values within [0,1]) should be performed, default <code>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
-<dd>Array of samples to be transformed, where each sample is of size <code>in_dim</code></dd>
+<dd>Array of samples to be transformed, where each sample is of size
+<code>in_dim</code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -658,7 +713,8 @@ Whether scaling (making values within [0,1]) should be performed, default <code>
     Parameters
     ----------
     data : array
-        Array of samples to be transformed, where each sample is of size `in_dim`
+        Array of samples to be transformed, where each sample is of size
+        `in_dim`
 
     Returns
     -------

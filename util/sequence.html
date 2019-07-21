@@ -37,8 +37,10 @@ class DECSequence(Sequence):
         return math.ceil(self.data.shape[0] / self.batch_size)
 
     def __getitem__(self, index):
-        idx = slice(index *
-                    self.batch_size, min((index+1) * self.batch_size, self.target.shape[0]))
+        idx = slice(
+            index * self.batch_size,
+            min((index+1) * self.batch_size, self.target.shape[0])
+        )
         return (self.data[idx], self.target[idx])
 
     def on_epoch_end(self):
@@ -125,8 +127,10 @@ the case with generators.</p>
         return math.ceil(self.data.shape[0] / self.batch_size)
 
     def __getitem__(self, index):
-        idx = slice(index *
-                    self.batch_size, min((index+1) * self.batch_size, self.target.shape[0]))
+        idx = slice(
+            index * self.batch_size,
+            min((index+1) * self.batch_size, self.target.shape[0])
+        )
         return (self.data[idx], self.target[idx])
 
     def on_epoch_end(self):

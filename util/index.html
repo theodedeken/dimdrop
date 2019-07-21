@@ -110,8 +110,10 @@ the case with generators.</p>
         return math.ceil(self.data.shape[0] / self.batch_size)
 
     def __getitem__(self, index):
-        idx = slice(index *
-                    self.batch_size, min((index+1) * self.batch_size, self.target.shape[0]))
+        idx = slice(
+            index * self.batch_size,
+            min((index+1) * self.batch_size, self.target.shape[0])
+        )
         return (self.data[idx], self.target[idx])
 
     def on_epoch_end(self):
@@ -141,7 +143,8 @@ the case with generators.</p>
 <span>(</span><span>n_components=256, batch_size=100, lr=0.01, patience=3, epochs=1000, verbose=0)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Adaptation on the <code>BernoulliRBM</code> class of sklearn to add the ability to stop early when training does not improve.</p>
+<section class="desc"><p>Adaptation on the <code>BernoulliRBM</code> class of sklearn to add the ability to
+stop early when training does not improve.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>n_components</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -151,7 +154,8 @@ the case with generators.</p>
 <dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>The learning rate of the rbm, default <code>0.01</code></dd>
 <dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The amount of epochs without improvement before training stops, default <code>3</code></dd>
+<dd>The amount of epochs without improvement before training stops,
+default <code>3</code></dd>
 <dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The maximum amount of epochs, default <code>1000</code></dd>
 <dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -166,7 +170,8 @@ the case with generators.</p>
 <summary>Source code</summary>
 <pre><code class="python">class EarlyStoppingRBM:
     &#34;&#34;&#34;
-    Adaptation on the `BernoulliRBM` class of sklearn to add the ability to stop early when training does not improve.
+    Adaptation on the `BernoulliRBM` class of sklearn to add the ability to
+    stop early when training does not improve.
 
     Parameters
     ----------
@@ -177,7 +182,8 @@ the case with generators.</p>
     lr : float, optional
         The learning rate of the rbm, default `0.01`
     patience : int, optional
-        The amount of epochs without improvement before training stops, default `3`
+        The amount of epochs without improvement before training stops,
+        default `3`
     epochs : int, optional
         The maximum amount of epochs, default `1000`
     verbose : int, optional
@@ -189,9 +195,22 @@ the case with generators.</p>
         the rbm to be trained
     &#34;&#34;&#34;
 
-    def __init__(self, n_components=256, batch_size=100, lr=0.01, patience=3, epochs=1000, verbose=0):
-        self.rbm = BernoulliRBM(n_components=n_components, n_iter=1,
-                                batch_size=batch_size, learning_rate=lr, verbose=verbose)
+    def __init__(
+        self,
+        n_components=256,
+        batch_size=100,
+        lr=0.01,
+        patience=3,
+        epochs=1000,
+        verbose=0
+    ):
+        self.rbm = BernoulliRBM(
+            n_components=n_components,
+            n_iter=1,
+            batch_size=batch_size,
+            learning_rate=lr,
+            verbose=verbose
+        )
         self.patience = patience
         self.epochs = epochs
         self.verbose = verbose

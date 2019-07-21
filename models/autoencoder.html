@@ -34,33 +34,40 @@ from ..util import Transform
 
 class Autoencoder:
     &#34;&#34;&#34;
-    A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.
+    A deep autoencoder model as baseline for other autoencoder based
+    dimensionality reduction methods.
 
-    The defaults are set to the parameters explained in a paper of Geoffrey Hinton.
+    The defaults are set to the parameters explained in a paper of
+    Geoffrey Hinton.
 
     Parameters
     ----------
-    in_dim : int 
+    in_dim : int
         The input dimension
     out_dim : int
         The output dimension
     layer_sizes : array of int, optional
-        The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
-    lr : float, optional 
+        The sizes of the layers of the network, is mirrored over encoder and
+        decoder parts, default `[2000, 1000, 500]`
+    lr : float, optional
         The learning rate of the network, default `0.01`
     log : boolean, optional
         Whether log-transformation should be performed, default `False`
     scale : boolean, optional
-        Whether scaling (making values within [0,1]) should be performed, default `True`
+        Whether scaling (making values within [0,1]) should be performed,
+        default `True`
     batch_size : int, optional
         The batch size of the network, default `100`
     patience : int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
+        The amount of epochs without improvement before the network stops
+        training, default `3`
     epochs : int, optional
         The maximum amount of epochs, default `1000`
     regularizer : keras regularizer, optional
-        A regularizer to use for the middle layer of the autoencoder. 
-        `None` or instance of `dimdrop.regularizers.KMeansRegularizer`, `dimdrop.regularizers.GMMRegularizer`, `dimdrop.regularizers.TSNERegularizer`.
+        A regularizer to use for the middle layer of the autoencoder.
+        `None` or instance of `dimdrop.regularizers.KMeansRegularizer`,
+        `dimdrop.regularizers.GMMRegularizer`,
+        `dimdrop.regularizers.TSNERegularizer`.
     pretrain_method : string, optional
         The pretrain method to use. `None`, `&#39;rbm&#39;` or `&#39;stacked&#39;`
     verbose : int, optional
@@ -79,8 +86,8 @@ class Autoencoder:
 
     References
     ----------
-    - G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data with neural 
-        networks. *Science*, 313(5786):504–507, July 2006.
+    - G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data
+      with neural networks. *Science*, 313(5786):504–507, July 2006.
     &#34;&#34;&#34;
 
     def __init__(
@@ -115,12 +122,17 @@ class Autoencoder:
 
     def __init_network(self):
         activation = &#39;sigmoid&#39; if self.pretrain_method == &#39;rbm&#39; else &#39;relu&#39;
-        self.layers = [
-            Dense(self.layer_sizes[0], activation=activation, input_shape=(self.in_dim,))]
+        self.layers = [Dense(
+            self.layer_sizes[0],
+            activation=activation,
+            input_shape=(self.in_dim,)
+        )]
         self.layers += [Dense(size, activation=activation)
                         for size in self.layer_sizes[1:]]
-        self.layers += [Dense(self.out_dim, activity_regularizer=self.regularizer)
-                        ] if self.regularizer else [Dense(self.out_dim)]
+        self.layers += [Dense(
+            self.out_dim,
+            activity_regularizer=self.regularizer
+        )] if self.regularizer else [Dense(self.out_dim)]
         self.layers += [Dense(size, activation=activation)
                         for size in self.layer_sizes[::-1]]
         self.layers += [Dense(self.in_dim)]
@@ -137,8 +149,13 @@ class Autoencoder:
         )
 
     def __pretrain_rbm(self, data):
-        rbms = [BernoulliRBM(batch_size=self.batch_size, learning_rate=self.lr,
-                             n_components=num, n_iter=20, verbose=self.verbose) for num in self.layer_sizes + [self.out_dim]]
+        rbms = [BernoulliRBM(
+            batch_size=self.batch_size,
+            learning_rate=self.lr,
+            n_components=num,
+            n_iter=20,
+            verbose=self.verbose
+        ) for num in self.layer_sizes + [self.out_dim]]
         current = data
         for i, rbm in enumerate(rbms):
             if self.verbose:
@@ -177,8 +194,14 @@ class Autoencoder:
                 optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
             )
 
-            stack.fit(cur_data, cur_data, epochs=self.epochs, callbacks=[early_stopping],
-                      batch_size=self.batch_size, verbose=self.verbose)
+            stack.fit(
+                cur_data,
+                cur_data,
+                epochs=self.epochs,
+                callbacks=[early_stopping],
+                batch_size=self.batch_size,
+                verbose=self.verbose
+            )
             cur_data = stack_encode.predict(cur_data)
 
     def fit(self, data):
@@ -210,7 +233,8 @@ class Autoencoder:
         Parameters
         ----------
         data : array
-            Array of samples to be transformed, where each sample is of size `in_dim`
+            Array of samples to be transformed, where each sample is of size
+            `in_dim`
 
         Returns
         -------
@@ -252,8 +276,10 @@ class Autoencoder:
 <span>(</span><span>in_dim, out_dim, layer_sizes=[2000, 1000, 500], lr=0.01, scale=True, log=False, batch_size=100, patience=3, epochs=1000, regularizer=None, pretrain_method='rbm', verbose=0)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.</p>
-<p>The defaults are set to the parameters explained in a paper of Geoffrey Hinton.</p>
+<section class="desc"><p>A deep autoencoder model as baseline for other autoencoder based
+dimensionality reduction methods.</p>
+<p>The defaults are set to the parameters explained in a paper of
+Geoffrey Hinton.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
@@ -261,22 +287,27 @@ class Autoencoder:
 <dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
 <dd>The output dimension</dd>
 <dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code> of <code>int</code>, optional</dt>
-<dd>The sizes of the layers of the network, is mirrored over encoder en decoder parts, default <code>[2000, 1000, 500]</code></dd>
+<dd>The sizes of the layers of the network, is mirrored over encoder and
+decoder parts, default <code>[2000, 1000, 500]</code></dd>
 <dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>The learning rate of the network, default <code>0.01</code></dd>
 <dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
 <dd>Whether log-transformation should be performed, default <code>False</code></dd>
 <dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
-<dd>Whether scaling (making values within [0,1]) should be performed, default <code>True</code></dd>
+<dd>Whether scaling (making values within [0,1]) should be performed,
+default <code>True</code></dd>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The batch size of the network, default <code>100</code></dd>
 <dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The amount of epochs without improvement before the network stops training, default <code>3</code></dd>
+<dd>The amount of epochs without improvement before the network stops
+training, default <code>3</code></dd>
 <dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The maximum amount of epochs, default <code>1000</code></dd>
 <dt><strong><code>regularizer</code></strong> :&ensp;<code>keras</code> <code>regularizer</code>, optional</dt>
 <dd>A regularizer to use for the middle layer of the autoencoder.
-<code>None</code> or instance of <a title="dimdrop.regularizers.KMeansRegularizer" href="../regularizers/index.html#dimdrop.regularizers.KMeansRegularizer"><code>KMeansRegularizer</code></a>, <code>dimdrop.regularizers.GMMRegularizer</code>, <a title="dimdrop.regularizers.TSNERegularizer" href="../regularizers/index.html#dimdrop.regularizers.TSNERegularizer"><code>TSNERegularizer</code></a>.</dd>
+<code>None</code> or instance of <a title="dimdrop.regularizers.KMeansRegularizer" href="../regularizers/index.html#dimdrop.regularizers.KMeansRegularizer"><code>KMeansRegularizer</code></a>,
+<code>dimdrop.regularizers.GMMRegularizer</code>,
+<a title="dimdrop.regularizers.TSNERegularizer" href="../regularizers/index.html#dimdrop.regularizers.TSNERegularizer"><code>TSNERegularizer</code></a>.</dd>
 <dt><strong><code>pretrain_method</code></strong> :&ensp;<code>string</code>, optional</dt>
 <dd>The pretrain method to use. <code>None</code>, <code>'rbm'</code> or <code>'stacked'</code></dd>
 <dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
@@ -295,40 +326,47 @@ class Autoencoder:
 </dl>
 <h2 id="references">References</h2>
 <ul>
-<li>G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data with neural
-networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
+<li>G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data
+with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 </ul></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Autoencoder:
     &#34;&#34;&#34;
-    A deep autoencoder model as baseline for other autoencoder based dimensionality reduction methods.
+    A deep autoencoder model as baseline for other autoencoder based
+    dimensionality reduction methods.
 
-    The defaults are set to the parameters explained in a paper of Geoffrey Hinton.
+    The defaults are set to the parameters explained in a paper of
+    Geoffrey Hinton.
 
     Parameters
     ----------
-    in_dim : int 
+    in_dim : int
         The input dimension
     out_dim : int
         The output dimension
     layer_sizes : array of int, optional
-        The sizes of the layers of the network, is mirrored over encoder en decoder parts, default `[2000, 1000, 500]`
-    lr : float, optional 
+        The sizes of the layers of the network, is mirrored over encoder and
+        decoder parts, default `[2000, 1000, 500]`
+    lr : float, optional
         The learning rate of the network, default `0.01`
     log : boolean, optional
         Whether log-transformation should be performed, default `False`
     scale : boolean, optional
-        Whether scaling (making values within [0,1]) should be performed, default `True`
+        Whether scaling (making values within [0,1]) should be performed,
+        default `True`
     batch_size : int, optional
         The batch size of the network, default `100`
     patience : int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
+        The amount of epochs without improvement before the network stops
+        training, default `3`
     epochs : int, optional
         The maximum amount of epochs, default `1000`
     regularizer : keras regularizer, optional
-        A regularizer to use for the middle layer of the autoencoder. 
-        `None` or instance of `dimdrop.regularizers.KMeansRegularizer`, `dimdrop.regularizers.GMMRegularizer`, `dimdrop.regularizers.TSNERegularizer`.
+        A regularizer to use for the middle layer of the autoencoder.
+        `None` or instance of `dimdrop.regularizers.KMeansRegularizer`,
+        `dimdrop.regularizers.GMMRegularizer`,
+        `dimdrop.regularizers.TSNERegularizer`.
     pretrain_method : string, optional
         The pretrain method to use. `None`, `&#39;rbm&#39;` or `&#39;stacked&#39;`
     verbose : int, optional
@@ -347,8 +385,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 
     References
     ----------
-    - G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data with neural 
-        networks. *Science*, 313(5786):504–507, July 2006.
+    - G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data
+      with neural networks. *Science*, 313(5786):504–507, July 2006.
     &#34;&#34;&#34;
 
     def __init__(
@@ -383,12 +421,17 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 
     def __init_network(self):
         activation = &#39;sigmoid&#39; if self.pretrain_method == &#39;rbm&#39; else &#39;relu&#39;
-        self.layers = [
-            Dense(self.layer_sizes[0], activation=activation, input_shape=(self.in_dim,))]
+        self.layers = [Dense(
+            self.layer_sizes[0],
+            activation=activation,
+            input_shape=(self.in_dim,)
+        )]
         self.layers += [Dense(size, activation=activation)
                         for size in self.layer_sizes[1:]]
-        self.layers += [Dense(self.out_dim, activity_regularizer=self.regularizer)
-                        ] if self.regularizer else [Dense(self.out_dim)]
+        self.layers += [Dense(
+            self.out_dim,
+            activity_regularizer=self.regularizer
+        )] if self.regularizer else [Dense(self.out_dim)]
         self.layers += [Dense(size, activation=activation)
                         for size in self.layer_sizes[::-1]]
         self.layers += [Dense(self.in_dim)]
@@ -405,8 +448,13 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         )
 
     def __pretrain_rbm(self, data):
-        rbms = [BernoulliRBM(batch_size=self.batch_size, learning_rate=self.lr,
-                             n_components=num, n_iter=20, verbose=self.verbose) for num in self.layer_sizes + [self.out_dim]]
+        rbms = [BernoulliRBM(
+            batch_size=self.batch_size,
+            learning_rate=self.lr,
+            n_components=num,
+            n_iter=20,
+            verbose=self.verbose
+        ) for num in self.layer_sizes + [self.out_dim]]
         current = data
         for i, rbm in enumerate(rbms):
             if self.verbose:
@@ -445,8 +493,14 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
                 optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
             )
 
-            stack.fit(cur_data, cur_data, epochs=self.epochs, callbacks=[early_stopping],
-                      batch_size=self.batch_size, verbose=self.verbose)
+            stack.fit(
+                cur_data,
+                cur_data,
+                epochs=self.epochs,
+                callbacks=[early_stopping],
+                batch_size=self.batch_size,
+                verbose=self.verbose
+            )
             cur_data = stack_encode.predict(cur_data)
 
     def fit(self, data):
@@ -478,7 +532,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         Parameters
         ----------
         data : array
-            Array of samples to be transformed, where each sample is of size `in_dim`
+            Array of samples to be transformed, where each sample is of size
+            `in_dim`
 
         Returns
         -------
@@ -590,7 +645,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
-<dd>Array of samples to be transformed, where each sample is of size <code>in_dim</code></dd>
+<dd>Array of samples to be transformed, where each sample is of size
+<code>in_dim</code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -606,7 +662,8 @@ networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
     Parameters
     ----------
     data : array
-        Array of samples to be transformed, where each sample is of size `in_dim`
+        Array of samples to be transformed, where each sample is of size
+        `in_dim`
 
     Returns
     -------
