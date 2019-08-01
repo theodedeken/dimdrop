@@ -35,6 +35,15 @@ from ..util import DECSequence
 
 
 class DEC(Autoencoder):
+    &#34;&#34;&#34;
+    Deep Embedded Clustering model
+
+    References
+    ----------
+    * Junyuan Xie, Ross B. Girshick, and Ali Farhadi. Unsupervised deep
+      embedding for clustering analysis. *CoRR*, abs/1511.06335, 2015.
+    &#34;&#34;&#34;
+
     def __init__(
             self,
             in_dim,
@@ -48,6 +57,7 @@ class DEC(Autoencoder):
             batch_size=256,
             patience=3,
             tol=0.01,
+            decay=True,
             verbose=0):
         super().__init__(
             in_dim,
@@ -61,6 +71,7 @@ class DEC(Autoencoder):
             epochs=epochs,
             regularizer=None,
             pretrain_method=&#39;stacked&#39;,
+            decay=decay,
             verbose=verbose
         )
         self.k = k
@@ -101,6 +112,18 @@ class DEC(Autoencoder):
         )
 
     def soft_cluster_assignments(self, data):
+        &#34;&#34;&#34;Get the soft cluster assignments of the clustering layer of the DEC
+        network for the input data.
+
+        Parameters
+        ----------
+        data : array
+            The input data
+
+        Returns
+        -------
+        array of cluster assignments
+        &#34;&#34;&#34;
         return np.apply_along_axis(
             np.argmax,
             1,
@@ -119,65 +142,27 @@ class DEC(Autoencoder):
 <dl>
 <dt id="dimdrop.models.dec.DEC"><code class="flex name class">
 <span>class <span class="ident">DEC</span></span>
-<span>(</span><span>in_dim, out_dim, k, layer_sizes=[500, 500, 2000], epochs=1000, lr=0.1, scale=True, log=False, batch_size=256, patience=3, tol=0.01, verbose=0)</span>
+<span>(</span><span>in_dim, out_dim, k, layer_sizes=[500, 500, 2000], epochs=1000, lr=0.1, scale=True, log=False, batch_size=256, patience=3, tol=0.01, decay=True, verbose=0)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>A deep autoencoder model as baseline for other autoencoder based
-dimensionality reduction methods.</p>
-<p>The defaults are set to the parameters explained in a paper of
-Geoffrey Hinton.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The input dimension</dd>
-<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
-<dd>The output dimension</dd>
-<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code> of <code>int</code>, optional</dt>
-<dd>The sizes of the layers of the network, is mirrored over encoder and
-decoder parts, default <code>[2000, 1000, 500]</code></dd>
-<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
-<dd>The learning rate of the network, default <code>0.01</code></dd>
-<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
-<dd>Whether log-transformation should be performed, default <code>False</code></dd>
-<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
-<dd>Whether scaling (making values within [0,1]) should be performed,
-default <code>True</code></dd>
-<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The batch size of the network, default <code>100</code></dd>
-<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The amount of epochs without improvement before the network stops
-training, default <code>3</code></dd>
-<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The maximum amount of epochs, default <code>1000</code></dd>
-<dt><strong><code>regularizer</code></strong> :&ensp;<code>keras</code> <code>regularizer</code>, optional</dt>
-<dd>A regularizer to use for the middle layer of the autoencoder.
-<code>None</code> or instance of <a title="dimdrop.regularizers.KMeansRegularizer" href="../regularizers/index.html#dimdrop.regularizers.KMeansRegularizer"><code>KMeansRegularizer</code></a>,
-<code>dimdrop.regularizers.GMMRegularizer</code>,
-<a title="dimdrop.regularizers.TSNERegularizer" href="../regularizers/index.html#dimdrop.regularizers.TSNERegularizer"><code>TSNERegularizer</code></a>.</dd>
-<dt><strong><code>pretrain_method</code></strong> :&ensp;<code>string</code>, optional</dt>
-<dd>The pretrain method to use. <code>None</code>, <code>'rbm'</code> or <code>'stacked'</code></dd>
-<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>The verbosity of the network, default <code>0</code></dd>
-</dl>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>model</code></strong> :&ensp; <code>keras</code> <code>model</code></dt>
-<dd>The autoencoder model</dd>
-<dt><strong><code>encoder</code></strong> :&ensp;<code>keras</code> <code>model</code></dt>
-<dd>The encoder model</dd>
-<dt><strong><code>layers</code></strong> :&ensp;<code>array</code> of <code>keras</code> <code>layers</code></dt>
-<dd>The layers of the network</dd>
-<dt><strong><code>data_transform</code></strong> :&ensp;<code>Transform</code> <code>object</code></dt>
-<dd>The transformation to apply on the data before using it</dd>
-</dl>
+<section class="desc"><p>Deep Embedded Clustering model</p>
 <h2 id="references">References</h2>
 <ul>
-<li>G E Hinton and R R Salakhutdinov. Reducing the dimensionality of data
-with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
+<li>Junyuan Xie, Ross B. Girshick, and Ali Farhadi. Unsupervised deep
+embedding for clustering analysis. <em>CoRR</em>, abs/1511.06335, 2015.</li>
 </ul></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class DEC(Autoencoder):
+    &#34;&#34;&#34;
+    Deep Embedded Clustering model
+
+    References
+    ----------
+    * Junyuan Xie, Ross B. Girshick, and Ali Farhadi. Unsupervised deep
+      embedding for clustering analysis. *CoRR*, abs/1511.06335, 2015.
+    &#34;&#34;&#34;
+
     def __init__(
             self,
             in_dim,
@@ -191,6 +176,7 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
             batch_size=256,
             patience=3,
             tol=0.01,
+            decay=True,
             verbose=0):
         super().__init__(
             in_dim,
@@ -204,6 +190,7 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
             epochs=epochs,
             regularizer=None,
             pretrain_method=&#39;stacked&#39;,
+            decay=decay,
             verbose=verbose
         )
         self.k = k
@@ -244,6 +231,18 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         )
 
     def soft_cluster_assignments(self, data):
+        &#34;&#34;&#34;Get the soft cluster assignments of the clustering layer of the DEC
+        network for the input data.
+
+        Parameters
+        ----------
+        data : array
+            The input data
+
+        Returns
+        -------
+        array of cluster assignments
+        &#34;&#34;&#34;
         return np.apply_along_axis(
             np.argmax,
             1,
@@ -260,10 +259,33 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 <span>def <span class="ident">soft_cluster_assignments</span></span>(<span>self, data)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Get the soft cluster assignments of the clustering layer of the DEC
+network for the input data.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
+<dd>The input data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>array</code> of <code>cluster</code> <code>assignments</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def soft_cluster_assignments(self, data):
+    &#34;&#34;&#34;Get the soft cluster assignments of the clustering layer of the DEC
+    network for the input data.
+
+    Parameters
+    ----------
+    data : array
+        The input data
+
+    Returns
+    -------
+    array of cluster assignments
+    &#34;&#34;&#34;
     return np.apply_along_axis(
         np.argmax,
         1,

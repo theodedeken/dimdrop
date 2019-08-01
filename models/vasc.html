@@ -60,8 +60,8 @@ class VASC:
     &#34;&#34;&#34;
     VASC: variational autoencoder for scRNA-seq datasets
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     in_dim : int
         The input dimension
     out_dim : int
@@ -85,14 +85,23 @@ class VASC:
     scale: boolean, optional
         Whether scaling (making values within [0,1]) should be performed,
         default `True`
+    decay : bool, optional
+        Whether to decay the learning rate during training, default `True`.
+    verbose : int, optional
+        Controls the verbosity of the model, default `0`
 
-    Attributes:
-    -----------
-    TODO
+    Attributes
+    ----------
+    ae : keras model
+        Partial model used for generating the embbeddings
+    vae : keras model
+        The variational autoencoder
 
-    References:
-    -----------
-    TODO
+    References
+    ----------
+    * Dongfang Wang and Jin Gu. Vasc: dimension reduction and visualization of
+      single cell rna sequencing data by deep variational autoencoder.
+      *bioRxiv*, 2017.
     &#34;&#34;&#34;
 
     def __init__(
@@ -107,6 +116,7 @@ class VASC:
             var=False,
             log=False,
             scale=True,
+            decay=True,
             verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
@@ -118,6 +128,7 @@ class VASC:
         self.var = var
         self.data_transform = Transform(scale, log)
         self.verbose = verbose
+        self.decay = decay
         self.__init_network()
 
     def __init_network(self):
@@ -191,7 +202,8 @@ class VASC:
 
         loss_func = VAELoss(in_dim, z_log_var, z_mean)
 
-        opt = RMSprop(lr=self.lr, decay=self.lr / self.epochs)
+        opt = RMSprop(lr=self.lr, decay=self.lr /
+                      self.epochs if self.decay else 0.0)
         vae.compile(optimizer=opt, loss=loss_func)
 
         ae = Model(inputs=[expr_in, temp_in], outputs=[
@@ -372,46 +384,61 @@ def gumbel_softmax(args):
 <dl>
 <dt id="dimdrop.models.vasc.VASC"><code class="flex name class">
 <span>class <span class="ident">VASC</span></span>
-<span>(</span><span>in_dim, out_dim, layer_sizes=[512, 128, 32], epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=False, scale=True, verbose=0)</span>
+<span>(</span><span>in_dim, out_dim, layer_sizes=[512, 128, 32], epochs=1000, patience=3, batch_size=100, lr=0.01, var=False, log=False, scale=True, decay=True, verbose=0)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>VASC: variational autoencoder for scRNA-seq datasets</p>
-<h2 id="parameters">Parameters:</h2>
-<p>in_dim : int
-The input dimension
-out_dim : int
-The output dimension
-layer_sizes : array
-sizes of each layer in the neural network, default is the structure
-proposed in the original paper, namely: <code>[512, 128, 32]</code>
-epochs: int, optional
-Maximum number of epochs, default <code>5000</code>
-patience: int, optional
-The amount of epochs without improvement before the network stops
-training, default <code>3</code>
-batch_size: int, optional
-The batch size for stochastic optimization, default <code>100</code>
-lr : float, optional
-The learning rate of the network, default <code>0.01</code>
-var: boolean, optional
-Whether to estimate the variance parameters, default <code>False</code>
-log: boolean, optional
-Whether log-transformation should be performed, default <code>False</code>
-scale: boolean, optional
-Whether scaling (making values within [0,1]) should be performed,
-default <code>True</code></p>
-<h2 id="attributes">Attributes:</h2>
-<p>TODO</p>
-<h2 id="references">References:</h2>
-<p>TODO</p></section>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The input dimension</dd>
+<dt><strong><code>out_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The output dimension</dd>
+<dt><strong><code>layer_sizes</code></strong> :&ensp;<code>array</code></dt>
+<dd>sizes of each layer in the neural network, default is the structure
+proposed in the original paper, namely: <code>[512, 128, 32]</code></dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Maximum number of epochs, default <code>5000</code></dd>
+<dt><strong><code>patience</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The amount of epochs without improvement before the network stops
+training, default <code>3</code></dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The batch size for stochastic optimization, default <code>100</code></dd>
+<dt><strong><code>lr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The learning rate of the network, default <code>0.01</code></dd>
+<dt><strong><code>var</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether to estimate the variance parameters, default <code>False</code></dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether log-transformation should be performed, default <code>False</code></dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Whether scaling (making values within [0,1]) should be performed,
+default <code>True</code></dd>
+<dt><strong><code>decay</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether to decay the learning rate during training, default <code>True</code>.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Controls the verbosity of the model, default <code>0</code></dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>ae</code></strong> :&ensp;<code>keras</code> <code>model</code></dt>
+<dd>Partial model used for generating the embbeddings</dd>
+<dt><strong><code>vae</code></strong> :&ensp;<code>keras</code> <code>model</code></dt>
+<dd>The variational autoencoder</dd>
+</dl>
+<h2 id="references">References</h2>
+<ul>
+<li>Dongfang Wang and Jin Gu. Vasc: dimension reduction and visualization of
+single cell rna sequencing data by deep variational autoencoder.
+<em>bioRxiv</em>, 2017.</li>
+</ul></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class VASC:
     &#34;&#34;&#34;
     VASC: variational autoencoder for scRNA-seq datasets
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     in_dim : int
         The input dimension
     out_dim : int
@@ -435,14 +462,23 @@ default <code>True</code></p>
     scale: boolean, optional
         Whether scaling (making values within [0,1]) should be performed,
         default `True`
+    decay : bool, optional
+        Whether to decay the learning rate during training, default `True`.
+    verbose : int, optional
+        Controls the verbosity of the model, default `0`
 
-    Attributes:
-    -----------
-    TODO
+    Attributes
+    ----------
+    ae : keras model
+        Partial model used for generating the embbeddings
+    vae : keras model
+        The variational autoencoder
 
-    References:
-    -----------
-    TODO
+    References
+    ----------
+    * Dongfang Wang and Jin Gu. Vasc: dimension reduction and visualization of
+      single cell rna sequencing data by deep variational autoencoder.
+      *bioRxiv*, 2017.
     &#34;&#34;&#34;
 
     def __init__(
@@ -457,6 +493,7 @@ default <code>True</code></p>
             var=False,
             log=False,
             scale=True,
+            decay=True,
             verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
@@ -468,6 +505,7 @@ default <code>True</code></p>
         self.var = var
         self.data_transform = Transform(scale, log)
         self.verbose = verbose
+        self.decay = decay
         self.__init_network()
 
     def __init_network(self):
@@ -541,7 +579,8 @@ default <code>True</code></p>
 
         loss_func = VAELoss(in_dim, z_log_var, z_mean)
 
-        opt = RMSprop(lr=self.lr, decay=self.lr / self.epochs)
+        opt = RMSprop(lr=self.lr, decay=self.lr /
+                      self.epochs if self.decay else 0.0)
         vae.compile(optimizer=opt, loss=loss_func)
 
         ae = Model(inputs=[expr_in, temp_in], outputs=[

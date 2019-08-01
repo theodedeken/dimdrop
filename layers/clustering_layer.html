@@ -81,8 +81,8 @@ class ClusteringLayer(Layer):
     ```
         model.add(ClusteringLayer(n_clusters=10))
     ```
-    Parameters:
-    -----------
+    Parameters
+    ----------
     n_clusters: int
         number of clusters.
     weights: list of Numpy array, shape `(n_clusters, n_features)`, optional
@@ -91,12 +91,12 @@ class ClusteringLayer(Layer):
         degrees of freedom parameter in Student&#39;s t-distribution.
         Default to 1.0.
 
-    Input shape:
-    ------------
+    Input shape
+    -----------
         2D tensor with shape: `(n_samples, n_features)`.
 
-    Output shape:
-    -------------
+    Output shape
+    ------------
         2D tensor with shape: `(n_samples, n_clusters)`.
     &#34;&#34;&#34;
 
@@ -127,13 +127,13 @@ class ClusteringLayer(Layer):
                  q_ij can be interpreted as the probability of assigning
                  sample i to cluster j. (i.e., a soft assignment)
 
-        Parameters:
+        Parameters
         -----------
         inputs: tensor of shape `(n_samples, n_features)`
             the variable containing data
 
-        Returns:
-        --------
+        Returns
+        -------
         q: tensor of shape `(n_samples, n_clusters)`
             student&#39;s t-distribution, or soft labels for each sample.
         &#34;&#34;&#34;
@@ -175,18 +175,20 @@ cluster. The probability is calculated with student's t-distribution.</p>
 <h2 id="example">Example</h2>
 <pre><code>    model.add(ClusteringLayer(n_clusters=10))
 </code></pre>
-<h2 id="parameters">Parameters:</h2>
-<p>n_clusters: int
-number of clusters.
-weights: list of Numpy array, shape <code>(n_clusters, n_features)</code>, optional
-Represents the initial cluster centers.
-alpha: float, optional
-degrees of freedom parameter in Student's t-distribution.
-Default to 1.0.</p>
-<h2 id="input-shape">Input shape:</h2>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>n_clusters</code></strong> :&ensp;<code>int</code></dt>
+<dd>number of clusters.</dd>
+<dt><strong><code>weights</code></strong> :&ensp;<code>list</code> of <code>Numpy</code> <code>array</code>, <code>shape</code> <code>(</code>n_clusters<code>,</code>n_features<code>)</code>, optional</dt>
+<dd>Represents the initial cluster centers.</dd>
+<dt><strong><code>alpha</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>degrees of freedom parameter in Student's t-distribution.
+Default to 1.0.</dd>
+</dl>
+<h2 id="input-shape">Input shape</h2>
 <pre><code>2D tensor with shape: `(n_samples, n_features)`.
 </code></pre>
-<h2 id="output-shape">Output shape:</h2>
+<h2 id="output-shape">Output shape</h2>
 <pre><code>2D tensor with shape: `(n_samples, n_clusters)`.
 </code></pre></section>
 <details class="source">
@@ -202,8 +204,8 @@ Default to 1.0.</p>
     ```
         model.add(ClusteringLayer(n_clusters=10))
     ```
-    Parameters:
-    -----------
+    Parameters
+    ----------
     n_clusters: int
         number of clusters.
     weights: list of Numpy array, shape `(n_clusters, n_features)`, optional
@@ -212,12 +214,12 @@ Default to 1.0.</p>
         degrees of freedom parameter in Student&#39;s t-distribution.
         Default to 1.0.
 
-    Input shape:
-    ------------
+    Input shape
+    -----------
         2D tensor with shape: `(n_samples, n_features)`.
 
-    Output shape:
-    -------------
+    Output shape
+    ------------
         2D tensor with shape: `(n_samples, n_clusters)`.
     &#34;&#34;&#34;
 
@@ -248,13 +250,13 @@ Default to 1.0.</p>
                  q_ij can be interpreted as the probability of assigning
                  sample i to cluster j. (i.e., a soft assignment)
 
-        Parameters:
+        Parameters
         -----------
         inputs: tensor of shape `(n_samples, n_features)`
             the variable containing data
 
-        Returns:
-        --------
+        Returns
+        -------
         q: tensor of shape `(n_samples, n_clusters)`
             student&#39;s t-distribution, or soft labels for each sample.
         &#34;&#34;&#34;
@@ -315,12 +317,16 @@ Measure the similarity between embedded point z_i and centroid µ_j.
 q_ij = 1/(1+dist(x_i, µ_j)^2), then normalize it.
 q_ij can be interpreted as the probability of assigning
 sample i to cluster j. (i.e., a soft assignment)</p>
-<h2 id="parameters">Parameters:</h2>
-<p>inputs: tensor of shape <code>(n_samples, n_features)</code>
-the variable containing data</p>
-<h2 id="returns">Returns:</h2>
-<p>q: tensor of shape <code>(n_samples, n_clusters)</code>
-student's t-distribution, or soft labels for each sample.</p></section>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>inputs</code></strong> :&ensp;<code>tensor</code> of <code>shape</code> <code>(</code>n_samples<code>,</code>n_features<code>)</code></dt>
+<dd>the variable containing data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>q</code></strong> :&ensp;<code>tensor</code> of <code>shape</code> <code>(</code>n_samples<code>,</code>n_clusters<code>)</code></dt>
+<dd>student's t-distribution, or soft labels for each sample.</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def call(self, inputs, **kwargs):
@@ -330,13 +336,13 @@ student's t-distribution, or soft labels for each sample.</p></section>
              q_ij can be interpreted as the probability of assigning
              sample i to cluster j. (i.e., a soft assignment)
 
-    Parameters:
+    Parameters
     -----------
     inputs: tensor of shape `(n_samples, n_features)`
         the variable containing data
 
-    Returns:
-    --------
+    Returns
+    -------
     q: tensor of shape `(n_samples, n_clusters)`
         student&#39;s t-distribution, or soft labels for each sample.
     &#34;&#34;&#34;

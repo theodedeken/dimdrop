@@ -26,6 +26,21 @@
 
 
 class Transform:
+    &#34;&#34;&#34;
+    Transform input data
+
+    Parameters
+    ----------
+    scale : bool
+        Whether to scale the input data
+    log : bool
+        Whether to take the log of the input data
+
+    Returns
+    -------
+    The transformed input data
+    &#34;&#34;&#34;
+
     def __init__(self, scale=True, log=False):
         self.scale = scale
         self.log = log
@@ -56,10 +71,37 @@ class Transform:
 <span>(</span><span>scale=True, log=False)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Transform input data</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>scale</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to scale the input data</dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to take the log of the input data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The</code> <code>transformed</code> <code>input</code> <code>data</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Transform:
+    &#34;&#34;&#34;
+    Transform input data
+
+    Parameters
+    ----------
+    scale : bool
+        Whether to scale the input data
+    log : bool
+        Whether to take the log of the input data
+
+    Returns
+    -------
+    The transformed input data
+    &#34;&#34;&#34;
+
     def __init__(self, scale=True, log=False):
         self.scale = scale
         self.log = log

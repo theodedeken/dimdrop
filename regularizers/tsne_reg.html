@@ -27,6 +27,25 @@ from keras.callbacks import Callback
 
 
 class TSNERegularizer(Callback):
+    &#34;&#34;&#34;
+    Regularizer using the tsne loss function.
+
+    Parameters
+    ----------
+    dim : int,
+        the dimension of the layer on which the regularizer is working
+    joint_prob : array
+        The joint probabilities of the input data
+    batch_size : int
+        The batch size of the training, default `100`.
+
+    Attributes
+    ----------
+    batch : int
+        The current batch
+    loss : `dimdrop.losses.TSNELoss`
+        The t-SNE loss function.
+    &#34;&#34;&#34;
     __name__ = &#39;tsne_regularizer&#39;
 
     def __init__(self, dim, joint_prob, batch_size=100):
@@ -57,31 +76,45 @@ class TSNERegularizer(Callback):
 <span>(</span><span>dim, joint_prob, batch_size=100)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Abstract base class used to build new callbacks.</p>
-<h1 id="properties">Properties</h1>
-<pre><code>params: dict. Training parameters
-    (eg. verbosity, batch size, number of epochs...).
-model: instance of `keras.models.Model`.
-    Reference of the model being trained.
-</code></pre>
-<p>The <code>logs</code> dictionary that callback methods
-take as argument will contain keys for quantities relevant to
-the current batch or epoch.</p>
-<p>Currently, the <code>.fit()</code> method of the <code>Sequential</code> model class
-will include the following quantities in the <code>logs</code> that
-it passes to its callbacks:</p>
-<pre><code>on_epoch_end: logs include `acc` and `loss`, and
-    optionally include `val_loss`
-    (if validation is enabled in `fit`), and `val_acc`
-    (if validation and accuracy monitoring are enabled).
-on_batch_begin: logs include `size`,
-    the number of samples in the current batch.
-on_batch_end: logs include `loss`, and optionally `acc`
-    (if accuracy monitoring is enabled).
-</code></pre></section>
+<section class="desc"><p>Regularizer using the tsne loss function.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dim</code></strong> :&ensp;<code>int</code>,</dt>
+<dd>the dimension of the layer on which the regularizer is working</dd>
+<dt><strong><code>joint_prob</code></strong> :&ensp;<code>array</code></dt>
+<dd>The joint probabilities of the input data</dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>The batch size of the training, default <code>100</code>.</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>batch</code></strong> :&ensp;<code>int</code></dt>
+<dd>The current batch</dd>
+<dt><strong><code>loss</code></strong> :&ensp;<code>&lt;a title="dimdrop.losses.TSNELoss" href="../losses/index.html#dimdrop.losses.TSNELoss"&gt;</code>TSNELoss<code>&lt;/a&gt;</code></dt>
+<dd>The t-SNE loss function.</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class TSNERegularizer(Callback):
+    &#34;&#34;&#34;
+    Regularizer using the tsne loss function.
+
+    Parameters
+    ----------
+    dim : int,
+        the dimension of the layer on which the regularizer is working
+    joint_prob : array
+        The joint probabilities of the input data
+    batch_size : int
+        The batch size of the training, default `100`.
+
+    Attributes
+    ----------
+    batch : int
+        The current batch
+    loss : `dimdrop.losses.TSNELoss`
+        The t-SNE loss function.
+    &#34;&#34;&#34;
     __name__ = &#39;tsne_regularizer&#39;
 
     def __init__(self, dim, joint_prob, batch_size=100):

@@ -64,42 +64,42 @@ __all__ = [
 <span>(</span><span>data, model, batch_size)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Base object for fitting to a sequence of data, such as a dataset.</p>
-<p>Every <code>Sequence</code> must implement the <code>__getitem__</code> and the <code>__len__</code> methods.
-If you want to modify your dataset between epochs you may implement
-<code>on_epoch_end</code>. The method <code>__getitem__</code> should return a complete batch.</p>
-<h1 id="notes">Notes</h1>
-<p><code>Sequence</code> are a safer way to do multiprocessing. This structure guarantees
-that the network will only train once on each sample per epoch which is not
-the case with generators.</p>
-<h1 id="examples">Examples</h1>
-<pre><code class="python">    from skimage.io import imread
-    from skimage.transform import resize
-    import numpy as np
-
-    # Here, `x_set` is list of path to the images
-    # and `y_set` are the associated classes.
-
-    class CIFAR10Sequence(Sequence):
-
-        def __init__(self, x_set, y_set, batch_size):
-            self.x, self.y = x_set, y_set
-            self.batch_size = batch_size
-
-        def __len__(self):
-            return int(np.ceil(len(self.x) / float(self.batch_size)))
-
-        def __getitem__(self, idx):
-            batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]
-            batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]
-
-            return np.array([
-                resize(imread(file_name), (200, 200))
-                   for file_name in batch_x]), np.array(batch_y)
-</code></pre></section>
+<section class="desc"><p>Sequence generator for the DEC network</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
+<dd>The data to generate the sequence for</dd>
+<dt><strong><code>model</code></strong> :&ensp;<code>&lt;a title="dimdrop.models.DEC" href="../models/index.html#dimdrop.models.DEC"&gt;</code>DEC<code>&lt;/a&gt;</code></dt>
+<dd>The model to train</dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>The batch size</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>target</code></strong> :&ensp;<code>array</code></dt>
+<dd>The current target distribution</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class DECSequence(Sequence):
+    &#34;&#34;&#34;
+    Sequence generator for the DEC network
+
+    Parameters
+    ----------
+    data : array
+        The data to generate the sequence for
+    model : `dimdrop.models.DEC`
+        The model to train
+    batch_size : int
+        The batch size
+
+    Attributes
+    ----------
+    target : array
+        The current target distribution
+    &#34;&#34;&#34;
+
     def __init__(self, data, model, batch_size):
         self.data = data
         self.model = model
@@ -117,6 +117,9 @@ the case with generators.</p>
         return (self.data[idx], self.target[idx])
 
     def on_epoch_end(self):
+        &#34;&#34;&#34;
+        After each epoch update the target distribution.
+        &#34;&#34;&#34;
         self.target = target_distribution(self.model.predict(self.data))</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -129,10 +132,13 @@ the case with generators.</p>
 <span>def <span class="ident">on_epoch_end</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Method called at the end of every epoch.</p></section>
+<section class="desc"><p>After each epoch update the target distribution.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def on_epoch_end(self):
+    &#34;&#34;&#34;
+    After each epoch update the target distribution.
+    &#34;&#34;&#34;
     self.target = target_distribution(self.model.predict(self.data))</code></pre>
 </details>
 </dd>
@@ -291,10 +297,37 @@ default <code>3</code></dd>
 <span>(</span><span>scale=True, log=False)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Transform input data</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>scale</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to scale the input data</dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to take the log of the input data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The</code> <code>transformed</code> <code>input</code> <code>data</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Transform:
+    &#34;&#34;&#34;
+    Transform input data
+
+    Parameters
+    ----------
+    scale : bool
+        Whether to scale the input data
+    log : bool
+        Whether to take the log of the input data
+
+    Returns
+    -------
+    The transformed input data
+    &#34;&#34;&#34;
+
     def __init__(self, scale=True, log=False):
         self.scale = scale
         self.log = log

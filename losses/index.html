@@ -106,13 +106,34 @@ __all__ = [
 <span>(</span><span>in_dim, z_log_var, z_mean)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Custom loss function for a variational autoencoder.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>in_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>The dimension of the input</dd>
+<dt><strong><code>z_log_var</code></strong> :&ensp;<code>tensor</code></dt>
+<dd>The variance tensor</dd>
+<dt><strong><code>z_mean</code></strong> :&ensp;<code>tensor</code></dt>
+<dd>The mean tensor</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class VAELoss:
+    &#34;&#34;&#34;Custom loss function for a variational autoencoder.
+
+    Parameters
+    ----------
+    in_dim : int
+        The dimension of the input
+    z_log_var : tensor
+        The variance tensor
+    z_mean : tensor
+        The mean tensor
+    &#34;&#34;&#34;
     __name__ = &#39;vae_loss&#39;
 
     def __init__(self, in_dim, z_log_var, z_mean):
+
         self.in_dim = in_dim
         self.z_log_var = z_log_var
         self.z_mean = z_mean

@@ -70,6 +70,8 @@ class Autoencoder:
         `dimdrop.regularizers.TSNERegularizer`.
     pretrain_method : string, optional
         The pretrain method to use. `None`, `&#39;rbm&#39;` or `&#39;stacked&#39;`
+    decay : bool, optional
+        Whether to decay the learning rate during training, default `True`.
     verbose : int, optional
         The verbosity of the network, default `0`
 
@@ -103,6 +105,7 @@ class Autoencoder:
         epochs=1000,
         regularizer=None,
         pretrain_method=&#39;rbm&#39;,
+        decay=True,
         verbose=0
     ):
         self.in_dim = in_dim
@@ -115,6 +118,7 @@ class Autoencoder:
         self.epochs = epochs
         self.regularizer = regularizer
         self.pretrain_method = pretrain_method
+        self.decay = decay
         self.verbose = verbose
         self.__pretrainers = {&#39;rbm&#39;: self.__pretrain_rbm,
                               &#39;stacked&#39;: self.__pretrain_stacked}
@@ -142,7 +146,8 @@ class Autoencoder:
         )
         self.model.compile(
             loss=&#39;mse&#39;,
-            optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
+            optimizer=Adam(lr=self.lr, decay=self.lr /
+                           self.epochs if self.decay else 0.0)
         )
         self.encoder = Sequential(
             self.layers[:len(self.layers) // 2]
@@ -191,7 +196,8 @@ class Autoencoder:
 
             stack.compile(
                 loss=&#39;mse&#39;,
-                optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
+                optimizer=Adam(lr=self.lr, decay=self.lr /
+                               self.epochs if self.decay else 0.0)
             )
 
             stack.fit(
@@ -273,7 +279,7 @@ class Autoencoder:
 <dl>
 <dt id="dimdrop.models.autoencoder.Autoencoder"><code class="flex name class">
 <span>class <span class="ident">Autoencoder</span></span>
-<span>(</span><span>in_dim, out_dim, layer_sizes=[2000, 1000, 500], lr=0.01, scale=True, log=False, batch_size=100, patience=3, epochs=1000, regularizer=None, pretrain_method='rbm', verbose=0)</span>
+<span>(</span><span>in_dim, out_dim, layer_sizes=[2000, 1000, 500], lr=0.01, scale=True, log=False, batch_size=100, patience=3, epochs=1000, regularizer=None, pretrain_method='rbm', decay=True, verbose=0)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>A deep autoencoder model as baseline for other autoencoder based
@@ -310,6 +316,8 @@ training, default <code>3</code></dd>
 <a title="dimdrop.regularizers.TSNERegularizer" href="../regularizers/index.html#dimdrop.regularizers.TSNERegularizer"><code>TSNERegularizer</code></a>.</dd>
 <dt><strong><code>pretrain_method</code></strong> :&ensp;<code>string</code>, optional</dt>
 <dd>The pretrain method to use. <code>None</code>, <code>'rbm'</code> or <code>'stacked'</code></dd>
+<dt><strong><code>decay</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether to decay the learning rate during training, default <code>True</code>.</dd>
 <dt><strong><code>verbose</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>The verbosity of the network, default <code>0</code></dd>
 </dl>
@@ -369,6 +377,8 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         `dimdrop.regularizers.TSNERegularizer`.
     pretrain_method : string, optional
         The pretrain method to use. `None`, `&#39;rbm&#39;` or `&#39;stacked&#39;`
+    decay : bool, optional
+        Whether to decay the learning rate during training, default `True`.
     verbose : int, optional
         The verbosity of the network, default `0`
 
@@ -402,6 +412,7 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         epochs=1000,
         regularizer=None,
         pretrain_method=&#39;rbm&#39;,
+        decay=True,
         verbose=0
     ):
         self.in_dim = in_dim
@@ -414,6 +425,7 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         self.epochs = epochs
         self.regularizer = regularizer
         self.pretrain_method = pretrain_method
+        self.decay = decay
         self.verbose = verbose
         self.__pretrainers = {&#39;rbm&#39;: self.__pretrain_rbm,
                               &#39;stacked&#39;: self.__pretrain_stacked}
@@ -441,7 +453,8 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
         )
         self.model.compile(
             loss=&#39;mse&#39;,
-            optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
+            optimizer=Adam(lr=self.lr, decay=self.lr /
+                           self.epochs if self.decay else 0.0)
         )
         self.encoder = Sequential(
             self.layers[:len(self.layers) // 2]
@@ -490,7 +503,8 @@ with neural networks. <em>Science</em>, 313(5786):504–507, July 2006.</li>
 
             stack.compile(
                 loss=&#39;mse&#39;,
-                optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
+                optimizer=Adam(lr=self.lr, decay=self.lr /
+                               self.epochs if self.decay else 0.0)
             )
 
             stack.fit(
