@@ -38,8 +38,8 @@ class ClusteringLayer(Layer):
     ```
         model.add(ClusteringLayer(n_clusters=10))
     ```
-    Parameters:
-    -----------
+    Parameters
+    ----------
     n_clusters: int
         number of clusters.
     weights: list of Numpy array, shape `(n_clusters, n_features)`, optional
@@ -48,12 +48,12 @@ class ClusteringLayer(Layer):
         degrees of freedom parameter in Student's t-distribution.
         Default to 1.0.
 
-    Input shape:
-    ------------
+    Input shape
+    -----------
         2D tensor with shape: `(n_samples, n_features)`.
 
-    Output shape:
-    -------------
+    Output shape
+    ------------
         2D tensor with shape: `(n_samples, n_clusters)`.
     """
 
@@ -84,13 +84,13 @@ class ClusteringLayer(Layer):
                  q_ij can be interpreted as the probability of assigning
                  sample i to cluster j. (i.e., a soft assignment)
 
-        Parameters:
+        Parameters
         -----------
         inputs: tensor of shape `(n_samples, n_features)`
             the variable containing data
 
-        Returns:
-        --------
+        Returns
+        -------
         q: tensor of shape `(n_samples, n_clusters)`
             student's t-distribution, or soft labels for each sample.
         """

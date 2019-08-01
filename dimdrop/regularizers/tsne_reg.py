@@ -3,6 +3,25 @@ from keras.callbacks import Callback
 
 
 class TSNERegularizer(Callback):
+    """
+    Regularizer using the tsne loss function.
+
+    Parameters
+    ----------
+    dim : int,
+        the dimension of the layer on which the regularizer is working
+    joint_prob : array
+        The joint probabilities of the input data
+    batch_size : int
+        The batch size of the training, default `100`.
+
+    Attributes
+    ----------
+    batch : int
+        The current batch
+    loss : `dimdrop.losses.TSNELoss`
+        The t-SNE loss function.
+    """
     __name__ = 'tsne_regularizer'
 
     def __init__(self, dim, joint_prob, batch_size=100):

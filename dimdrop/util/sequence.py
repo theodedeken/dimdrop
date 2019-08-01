@@ -3,6 +3,24 @@ from keras.utils import Sequence
 
 
 class DECSequence(Sequence):
+    """
+    Sequence generator for the DEC network
+
+    Parameters
+    ----------
+    data : array
+        The data to generate the sequence for
+    model : `dimdrop.models.DEC`
+        The model to train
+    batch_size : int
+        The batch size
+
+    Attributes
+    ----------
+    target : array
+        The current target distribution
+    """
+
     def __init__(self, data, model, batch_size):
         self.data = data
         self.model = model
@@ -20,9 +38,24 @@ class DECSequence(Sequence):
         return (self.data[idx], self.target[idx])
 
     def on_epoch_end(self):
+        """
+        After each epoch update the target distribution.
+        """
         self.target = target_distribution(self.model.predict(self.data))
 
 
 def target_distribution(q):
+    """
+    Calculate the target distribution
+
+    Attributes
+    ----------
+    q : array
+        the input data
+
+    Returns
+    -------
+    target distribution
+    """
     weight = q ** 2 / q.sum(0)
     return (weight.T / weight.sum(1)).T

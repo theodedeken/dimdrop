@@ -5,8 +5,6 @@ from sklearn.cluster import KMeans
 
 import random
 
-# TODO update documentation
-
 
 class KMeansRegularizer(Callback):
     """

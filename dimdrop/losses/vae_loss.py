@@ -3,9 +3,21 @@ from keras.metrics import binary_crossentropy
 
 
 class VAELoss:
+    """Custom loss function for a variational autoencoder.
+
+    Parameters
+    ----------
+    in_dim : int
+        The dimension of the input
+    z_log_var : tensor
+        The variance tensor
+    z_mean : tensor
+        The mean tensor
+    """
     __name__ = 'vae_loss'
 
     def __init__(self, in_dim, z_log_var, z_mean):
+
         self.in_dim = in_dim
         self.z_log_var = z_log_var
         self.z_mean = z_mean

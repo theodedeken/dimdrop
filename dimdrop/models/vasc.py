@@ -35,8 +35,8 @@ class VASC:
     """
     VASC: variational autoencoder for scRNA-seq datasets
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     in_dim : int
         The input dimension
     out_dim : int
@@ -65,13 +65,18 @@ class VASC:
     verbose : int, optional
         Controls the verbosity of the model, default `0`
 
-    Attributes:
-    -----------
-    TODO
+    Attributes
+    ----------
+    ae : keras model
+        Partial model used for generating the embbeddings
+    vae : keras model
+        The variational autoencoder
 
-    References:
-    -----------
-    TODO
+    References
+    ----------
+    * Dongfang Wang and Jin Gu. Vasc: dimension reduction and visualization of
+      single cell rna sequencing data by deep variational autoencoder.
+      *bioRxiv*, 2017.
     """
 
     def __init__(

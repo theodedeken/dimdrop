@@ -11,6 +11,15 @@ from ..util import DECSequence
 
 
 class DEC(Autoencoder):
+    """
+    Deep Embedded Clustering model
+
+    References
+    ----------
+    * Junyuan Xie, Ross B. Girshick, and Ali Farhadi. Unsupervised deep
+      embedding for clustering analysis. *CoRR*, abs/1511.06335, 2015.
+    """
+
     def __init__(
             self,
             in_dim,
@@ -79,6 +88,18 @@ class DEC(Autoencoder):
         )
 
     def soft_cluster_assignments(self, data):
+        """Get the soft cluster assignments of the clustering layer of the DEC
+        network for the input data.
+
+        Parameters
+        ----------
+        data : array
+            The input data
+
+        Returns
+        -------
+        array of cluster assignments
+        """
         return np.apply_along_axis(
             np.argmax,
             1,

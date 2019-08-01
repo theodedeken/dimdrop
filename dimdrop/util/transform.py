@@ -2,6 +2,21 @@ import numpy as np
 
 
 class Transform:
+    """
+    Transform input data
+
+    Parameters
+    ----------
+    scale : bool
+        Whether to scale the input data
+    log : bool
+        Whether to take the log of the input data
+
+    Returns
+    -------
+    The transformed input data
+    """
+
     def __init__(self, scale=True, log=False):
         self.scale = scale
         self.log = log
