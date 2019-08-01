@@ -60,6 +60,10 @@ class VASC:
     scale: boolean, optional
         Whether scaling (making values within [0,1]) should be performed,
         default `True`
+    decay : bool, optional
+        Whether to decay the learning rate during training, default `True`.
+    verbose : int, optional
+        Controls the verbosity of the model, default `0`
 
     Attributes:
     -----------
@@ -82,6 +86,7 @@ class VASC:
             var=False,
             log=False,
             scale=True,
+            decay=True,
             verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
@@ -93,6 +98,7 @@ class VASC:
         self.var = var
         self.data_transform = Transform(scale, log)
         self.verbose = verbose
+        self.decay = decay
         self.__init_network()
 
     def __init_network(self):
@@ -166,7 +172,8 @@ class VASC:
 
         loss_func = VAELoss(in_dim, z_log_var, z_mean)
 
-        opt = RMSprop(lr=self.lr, decay=self.lr / self.epochs)
+        opt = RMSprop(lr=self.lr, decay=self.lr /
+                      self.epochs if self.decay else 0.0)
         vae.compile(optimizer=opt, loss=loss_func)
 
         ae = Model(inputs=[expr_in, temp_in], outputs=[

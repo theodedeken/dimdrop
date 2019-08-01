@@ -46,6 +46,8 @@ class ParametricTSNE:
         early, default `3`
     epochs : int, optional
         Maximum amount of epochs, default `1000`
+    decay : bool, optional
+        Whether to decay the learning rate during training, default `True`.
     verbose : int, optional
         Controls the verbosity of the model, default `0`
 
@@ -82,6 +84,7 @@ class ParametricTSNE:
             tol=1e-5,
             patience=3,
             epochs=1000,
+            decay=True,
             verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
@@ -95,6 +98,7 @@ class ParametricTSNE:
         self.patience = patience
         self.epochs = epochs
         self.verbose = verbose
+        self.decay = decay
         self.__init_network()
 
     def __init_network(self):
@@ -123,7 +127,8 @@ class ParametricTSNE:
 
         self.model = Sequential(self.layers)
 
-        optimizer = SGD(lr=self.lr, decay=self.lr / self.epochs)
+        optimizer = SGD(lr=self.lr, decay=self.lr /
+                        self.epochs if self.decay else 0.0)
         loss = TSNELoss(self.in_dim, self.batch_size)
 
         self.model.compile(

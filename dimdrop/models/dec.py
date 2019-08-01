@@ -24,6 +24,7 @@ class DEC(Autoencoder):
             batch_size=256,
             patience=3,
             tol=0.01,
+            decay=True,
             verbose=0):
         super().__init__(
             in_dim,
@@ -37,6 +38,7 @@ class DEC(Autoencoder):
             epochs=epochs,
             regularizer=None,
             pretrain_method='stacked',
+            decay=decay,
             verbose=verbose
         )
         self.k = k

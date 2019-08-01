@@ -46,6 +46,8 @@ class Autoencoder:
         `dimdrop.regularizers.TSNERegularizer`.
     pretrain_method : string, optional
         The pretrain method to use. `None`, `'rbm'` or `'stacked'`
+    decay : bool, optional
+        Whether to decay the learning rate during training, default `True`.
     verbose : int, optional
         The verbosity of the network, default `0`
 
@@ -79,6 +81,7 @@ class Autoencoder:
         epochs=1000,
         regularizer=None,
         pretrain_method='rbm',
+        decay=True,
         verbose=0
     ):
         self.in_dim = in_dim
@@ -91,6 +94,7 @@ class Autoencoder:
         self.epochs = epochs
         self.regularizer = regularizer
         self.pretrain_method = pretrain_method
+        self.decay = decay
         self.verbose = verbose
         self.__pretrainers = {'rbm': self.__pretrain_rbm,
                               'stacked': self.__pretrain_stacked}
@@ -118,7 +122,8 @@ class Autoencoder:
         )
         self.model.compile(
             loss='mse',
-            optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
+            optimizer=Adam(lr=self.lr, decay=self.lr /
+                           self.epochs if self.decay else 0.0)
         )
         self.encoder = Sequential(
             self.layers[:len(self.layers) // 2]
@@ -167,7 +172,8 @@ class Autoencoder:
 
             stack.compile(
                 loss='mse',
-                optimizer=Adam(lr=self.lr, decay=self.lr / self.epochs)
+                optimizer=Adam(lr=self.lr, decay=self.lr /
+                               self.epochs if self.decay else 0.0)
             )
 
             stack.fit(

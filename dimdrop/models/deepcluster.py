@@ -19,6 +19,7 @@ class DeepCluster(Autoencoder):
             epochs=1000,
             regularizer='kmeans',
             regularizer_weight=0.5,
+            decay=True,
             verbose=0
     ):
         if regularizer == 'kmeans':
@@ -41,6 +42,7 @@ class DeepCluster(Autoencoder):
             epochs=epochs,
             regularizer=regularizer_obj,
             pretrain_method=None,
+            decay=decay
             verbose=verbose
         )
 
