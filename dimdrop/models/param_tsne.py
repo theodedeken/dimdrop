@@ -159,6 +159,9 @@ class ParametricTSNE:
         data : array
             Array of training samples where each sample is of size `in_dim`
         """
+        # make data length be a multiple of batch size
+        data = data[:(data.shape[0] // self.batch_size) * self.batch_size]
+
         data = self.data_transform(data)
 
         if self.pretrain:
@@ -171,7 +174,7 @@ class ParametricTSNE:
         P = compute_joint_probabilities(
             data,
             batch_size=self.batch_size,
-            d=self.layer_sizes[-1],
+            d=self.out_dim,
             perplexity=self.perplexity,
             tol=self.tol,
             verbose=self.verbose
