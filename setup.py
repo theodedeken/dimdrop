@@ -11,7 +11,7 @@ setuptools.setup(
     description="Providing some dimensionality reduction methods using Machine Learning",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/TheOZoneBE/dimdrop",
+    url="https://github.com/theodedeken/dimdrop",
     packages=setuptools.find_packages(),
     install_requires=[
         "numpy",
