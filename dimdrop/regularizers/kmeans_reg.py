@@ -109,8 +109,9 @@ class KMeansRegularizer(Callback):
         true_centers = [i for i in range(
             len(self.cluster_centers)) if not np.isnan(self.cluster_centers[i][0])]
         if len(true_centers) < 4:
-            self.cluster_centers = KMeans(n_clusters=len(self.cluster_centers)).fit(
-                self.encoder.predict(self.input_data)).cluster_centers_
+            embedding = self.encoder.predict(self.input_data)
+            embedding = np.nan_to_num(embedding)
+            self.cluster_centers = KMeans(n_clusters=len(self.cluster_centers)).fit(embedding).cluster_centers_
         else:
             for index in false_centers:
                 sample = random.sample(true_centers, 3)
