@@ -5,8 +5,6 @@ from sklearn.cluster import KMeans
 
 import random
 
-# TODO update documentation
-
 
 class KMeansRegularizer(Callback):
     """
@@ -106,8 +104,8 @@ class KMeansRegularizer(Callback):
     def __fix_centers(self):
         false_centers = [i for i in range(
             len(self.cluster_centers)) if np.isnan(self.cluster_centers[i][0])]
-        true_centers = [i for i in range(
-            len(self.cluster_centers)) if not np.isnan(self.cluster_centers[i][0])]
+        true_centers = [i for i in range(len(self.cluster_centers))
+                        if not np.isnan(self.cluster_centers[i][0])]
         if len(true_centers) < 4:
             embedding = self.encoder.predict(self.input_data)
             embedding = np.nan_to_num(embedding)

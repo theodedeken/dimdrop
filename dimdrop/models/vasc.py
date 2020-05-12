@@ -1,7 +1,8 @@
 """
 Code adapted from https://github.com/wang-research/VASC
 """
-# FIXME if possible reimplement annealing for gumbel approximation in more idiomatic keras code
+# FIXME if possible reimplement annealing for gumbel approximation in more
+# idiomatic keras code
 
 # -*- coding: utf-8 -*-
 import h5py
@@ -13,7 +14,18 @@ from keras import regularizers
 from keras.models import Model
 import keras.backend as K
 from keras.layers.merge import concatenate, multiply
-from keras.layers import Input, Dense, Activation, Lambda, RepeatVector, Reshape, Layer, Dropout, BatchNormalization, Permute
+from keras.layers import (
+    Input,
+    Dense,
+    Activation,
+    Lambda,
+    RepeatVector,
+    Reshape,
+    Layer,
+    Dropout,
+    BatchNormalization,
+    Permute
+)
 from keras.callbacks import EarlyStopping
 from ..losses import VAELoss
 from ..util import Transform
@@ -23,18 +35,20 @@ class VASC:
     """
     VASC: variational autoencoder for scRNA-seq datasets
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     in_dim : int
         The input dimension
     out_dim : int
         The output dimension
     layer_sizes : array
-        sizes of each layer in the neural network, default is the structure proposed in the original paper, namely: `[512, 128, 32]`
+        sizes of each layer in the neural network, default is the structure
+        proposed in the original paper, namely: `[512, 128, 32]`
     epochs: int, optional
         Maximum number of epochs, default `5000`
     patience: int, optional
-        The amount of epochs without improvement before the network stops training, default `3`
+        The amount of epochs without improvement before the network stops
+        training, default `3`
     batch_size: int, optional
         The batch size for stochastic optimization, default `100`
     lr : float, optional
@@ -44,15 +58,25 @@ class VASC:
     log: boolean, optional
         Whether log-transformation should be performed, default `False`
     scale: boolean, optional
-        Whether scaling (making values within [0,1]) should be performed, default `True`
+        Whether scaling (making values within [0,1]) should be performed,
+        default `True`
+    decay : bool, optional
+        Whether to decay the learning rate during training, default `True`.
+    verbose : int, optional
+        Controls the verbosity of the model, default `0`
 
-    Attributes:
-    -----------
-    TODO
+    Attributes
+    ----------
+    ae : keras model
+        Partial model used for generating the embbeddings
+    vae : keras model
+        The variational autoencoder
 
-    References:
-    -----------
-    TODO
+    References
+    ----------
+    * Dongfang Wang and Jin Gu. Vasc: dimension reduction and visualization of
+      single cell rna sequencing data by deep variational autoencoder.
+      *bioRxiv*, 2017.
     """
 
     def __init__(
@@ -67,6 +91,7 @@ class VASC:
             var=False,
             log=False,
             scale=True,
+            decay=True,
             verbose=0):
         self.in_dim = in_dim
         self.out_dim = out_dim
@@ -78,6 +103,7 @@ class VASC:
         self.var = var
         self.data_transform = Transform(scale, log)
         self.verbose = verbose
+        self.decay = decay
         self.__init_network()
 
     def __init_network(self):
@@ -91,10 +117,15 @@ class VASC:
         for i, layer_size in enumerate(self.layer_sizes):
             if i == 0:
                 last_layer = Dense(
-                    units=layer_size, name='encoder_{}'.format(i + 1), kernel_regularizer=regularizers.l1(0.01))(last_layer)
+                    units=layer_size,
+                    name='encoder_{}'.format(i + 1),
+                    kernel_regularizer=regularizers.l1(0.01)
+                )(last_layer)
             else:
                 last_layer = Dense(
-                    units=layer_size, name='encoder_{}'.format(i + 1))(last_layer)
+                    units=layer_size,
+                    name='encoder_{}'.format(i + 1)
+                )(last_layer)
             last_layer = Activation('relu')(last_layer)
 
         z_mean = Dense(units=self.out_dim, name='z_mean')(last_layer)
@@ -146,7 +177,8 @@ class VASC:
 
         loss_func = VAELoss(in_dim, z_log_var, z_mean)
 
-        opt = RMSprop(lr=self.lr, decay=self.lr / self.epochs)
+        opt = RMSprop(lr=self.lr, decay=self.lr /
+                      self.epochs if self.decay else 0.0)
         vae.compile(optimizer=opt, loss=loss_func)
 
         ae = Model(inputs=[expr_in, temp_in], outputs=[
@@ -173,8 +205,15 @@ class VASC:
 
         early_stopping = EarlyStopping(monitor='loss', patience=self.patience)
 
-        self.vae.fit([data, tau_in], data, epochs=self.epochs, batch_size=self.batch_size,
-                     shuffle=True, verbose=self.verbose, callbacks=[early_stopping])
+        self.vae.fit(
+            [data, tau_in],
+            data,
+            epochs=self.epochs,
+            batch_size=self.batch_size,
+            shuffle=True,
+            verbose=self.verbose,
+            callbacks=[early_stopping]
+        )
 
     def fit_transform(self, data):
         """
@@ -200,7 +239,8 @@ class VASC:
         Parameters
         ----------
         data : array
-            Array of samples to be transformed, where each sample is of size `in_dim`
+            Array of samples to be transformed, where each sample is of size
+            `in_dim`
 
         Returns
         -------

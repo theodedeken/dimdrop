@@ -4,7 +4,8 @@ import numpy as np
 
 class EarlyStoppingRBM:
     """
-    Adaptation on the `BernoulliRBM` class of sklearn to add the ability to stop early when training does not improve.
+    Adaptation on the `BernoulliRBM` class of sklearn to add the ability to
+    stop early when training does not improve.
 
     Parameters
     ----------
@@ -15,7 +16,8 @@ class EarlyStoppingRBM:
     lr : float, optional
         The learning rate of the rbm, default `0.01`
     patience : int, optional
-        The amount of epochs without improvement before training stops, default `3`
+        The amount of epochs without improvement before training stops,
+        default `3`
     epochs : int, optional
         The maximum amount of epochs, default `1000`
     verbose : int, optional
@@ -27,9 +29,22 @@ class EarlyStoppingRBM:
         the rbm to be trained
     """
 
-    def __init__(self, n_components=256, batch_size=100, lr=0.01, patience=3, epochs=1000, verbose=0):
-        self.rbm = BernoulliRBM(n_components=n_components, n_iter=1,
-                                batch_size=batch_size, learning_rate=lr, verbose=verbose)
+    def __init__(
+        self,
+        n_components=256,
+        batch_size=100,
+        lr=0.01,
+        patience=3,
+        epochs=1000,
+        verbose=0
+    ):
+        self.rbm = BernoulliRBM(
+            n_components=n_components,
+            n_iter=1,
+            batch_size=batch_size,
+            learning_rate=lr,
+            verbose=verbose
+        )
         self.patience = patience
         self.epochs = epochs
         self.verbose = verbose
